@@ -12,7 +12,12 @@ concurrency:
 jobs:
   build:
     name: Cross-compile and package
-    runs-on: macos-15
+    # Not macos-15: its newest Xcode is 26.3 (Swift 6.2.4), and the vendored
+    # StikJIT.xcframework is built against Swift 6.4 -- Xcode 27. xcode-27 is
+    # GitHub's preview image (macOS 27 + Xcode 27) and is the only one with a new
+    # enough Swift compiler. runner.os is still "macOS", so the dependency cache
+    # below keeps hitting across the move.
+    runs-on: xcode-27
     timeout-minutes: 355
 
     steps:
@@ -20,6 +25,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+
+      - name: Toolchain check
+        run: |
+          xcodebuild -version
+          swift --version
+          # src/app/Frameworks/StikJIT.xcframework ships only a textual Swift
+          # interface -- there is no binary .swiftmodule to fall back on -- and it
+          # was built with Swift 6.4. Anything older cannot parse it, and the
+          # diagnostic is actively misleading: ~200 syntax errors pointing inside
+          # the .swiftinterface, which read as "the framework is corrupt" rather
+          # than "your compiler is too old". Assert the toolchain up front, where
+          # it is one line.
+          if ! swift --version | grep -qE "Swift version 6\.([4-9]|[1-9][0-9])|Swift version ([7-9]|[1-9][0-9])\."; then
+            echo "::error::need Xcode 27 / Swift 6.4+: StikJIT.xcframework is built against it"
+            exit 1
+          fi
 
       - name: Disk before
         run: df -h /

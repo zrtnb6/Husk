@@ -36,9 +36,21 @@ fi
 step "QEMU"
 ./scripts/build_ios.sh qemu
 
-step "integrate Husk sources into QEMU, then rebuild it"
-./scripts/integrate_husk.sh
-./scripts/build_ios.sh qemurebuild
+# QEMU is re-linked only when its staged dylib is absent.
+#
+# These two steps had no guard, and that was expensive: build_ios.sh rewrites the
+# meson cross file with whatever clang the *current* Xcode provides, so changing
+# the Xcode version makes meson see a different compiler and reconfigure --
+# recompiling all of QEMU, ~35 minutes, to produce the same iOS arm64 dylib.
+# integrate_husk.sh is idempotent and its result is already inside the dylib that
+# is sitting in build/ios-arm64/lib, so both can be skipped when it is there.
+if [ ! -f build/ios-arm64/lib/libqemu-aarch64-softmmu.dylib ]; then
+    step "integrate Husk sources into QEMU, then rebuild it"
+    ./scripts/integrate_husk.sh
+    ./scripts/build_ios.sh qemurebuild
+else
+    echo "[skip] QEMU dylib already staged"
+fi
 
 step "guest kernel + firmware"
 ./scripts/fetch_phase0_guest.sh
@@ -48,8 +60,12 @@ if [ ! -d build/ios-arm64/lib/MoltenVK.xcframework ]; then
     ./scripts/build_moltenvk_ios.sh
 fi
 
-step "on-device pairing (Rust)"
-./scripts/build_rppairing_ios.sh
+if [ ! -f build/ios-arm64/lib/libhusk_rppairing.a ]; then
+    step "on-device pairing (Rust)"
+    ./scripts/build_rppairing_ios.sh
+else
+    echo "[skip] rppairing already built"
+fi
 
 step "app + IPA"
 mkdir -p "$(dirname "$OUT")"
