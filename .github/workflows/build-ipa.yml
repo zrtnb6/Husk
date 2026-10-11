@@ -98,43 +98,35 @@ jobs:
         run: |
           set -x
           xcode-select -p
+          xcodebuild -showComponent MetalToolchain || true
           df -h /
-
-          if xcrun --find metal >/dev/null 2>&1; then
-            echo "metal compiler already present:"; xcrun --find metal
-            exit 0
-          fi
 
           # Xcode 26 unbundled the Metal compiler into an optional component.
           # Without it the app target stops at
           #   error: cannot execute tool 'metal' due to missing Metal Toolchain
           # and there is no build setting that skips it -- Husk ships .metal
           # sources for its presenter.
-          if ! xcodebuild -downloadComponent metalToolchain; then
-            echo "plain install failed; retrying with sudo"
-            sudo xcodebuild -downloadComponent metalToolchain
+          #
+          # Do NOT probe with `xcrun --find metal`: the driver stub always lives
+          # in XcodeDefault.xctoolchain, so it reports a path even when the
+          # toolchain itself is absent. The toolchain is a separate MobileAsset
+          # (mounted under cryptexd); ask Xcode whether it has it installed.
+          if xcodebuild -showComponent MetalToolchain 2>/dev/null | grep -q "Status: installed"; then
+            echo "Metal toolchain already installed"
+          else
+            xcodebuild -downloadComponent MetalToolchain \
+              || sudo xcodebuild -downloadComponent MetalToolchain
           fi
 
-          if xcrun --find metal >/dev/null 2>&1; then
-            xcrun --find metal; xcrun metal --version; exit 0
+          # Confirm it landed. xcrun memoises misses, so drop the cache first.
+          xcrun --kill-cache || true
+          xcodebuild -showComponent MetalToolchain || true
+          xcrun metal --version || true
+
+          if ! xcodebuild -showComponent MetalToolchain 2>/dev/null | grep -q "Status: installed"; then
+            echo "::error::Metal toolchain could not be installed on this image"
+            exit 1
           fi
-
-          # Apple's Xcode 26 release note documents a second failure mode: the
-          # component downloads but never registers with the selected Xcode,
-          # because the exported bundle records the build it was produced against
-          # and that does not match the installed one. Export it, repoint that
-          # field at our Xcode, import it.
-          EXPORT_DIR="$(mktemp -d)"
-          xcodebuild -downloadComponent metalToolchain -exportPath "$EXPORT_DIR"
-          BUNDLE="$(ls -d "$EXPORT_DIR"/MetalToolchain-*.exportedBundle | head -1)"
-          XC_BUILD="$(xcodebuild -version | sed -n 's/^Build version //p')"
-          echo "patching $BUNDLE -> $XC_BUILD"
-          /usr/libexec/PlistBuddy -c "Set :buildUpdateVersion $XC_BUILD" "$BUNDLE/ExportMetadata.plist" \
-            || plutil -replace buildUpdateVersion -string "$XC_BUILD" "$BUNDLE/ExportMetadata.plist"
-          xcodebuild -importComponent metalToolchain -importPath "$BUNDLE"
-
-          xcrun --find metal
-          xcrun metal --version
 
       - name: Add Rust iOS target
         run: |
