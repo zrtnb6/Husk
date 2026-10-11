@@ -24,6 +24,7 @@ private enum HuskJITWork {
                 return .init(success: true, message: "已重置开发者磁盘映像缓存。",
                              txmPresent: StikJIT.isTXMPresent)
             }
+            seedBundledDDI(at: root, paths: paths, manager: manager)
 
             guard let pairingData = request.pairingData, !pairingData.isEmpty else {
                 throw NSError(domain: "HuskJITHelper", code: 1,
@@ -73,6 +74,54 @@ private enum HuskJITWork {
             return .init(success: false, message: error.localizedDescription,
                          txmPresent: StikJIT.isTXMPresent)
         }
+    }
+
+    /// Lays down the Developer Disk Image the helper mounts on its way to
+    /// attaching.
+    ///
+    /// StikJIT fetches that image from GitHub itself, over the phone's own
+    /// network, so a route that cannot reach github.com ends the first mount
+    /// with "Failed to download Developer Disk Image: ...". The five files also
+    /// ship in this extension's bundle (scripts/fetch_ddi.sh), and this seeds
+    /// StikJIT's cache from them, so a fresh install mounts with no network
+    /// involved at all.
+    ///
+    /// Once only, marked beside the cache. Reset Developer Disk Image still
+    /// clears the cache, and because the marker survives, StikJIT then does
+    /// what it always did and fetches the current image -- which is the point
+    /// of that button after an iOS update. Reinstalling Husk seeds again.
+    private static func seedBundledDDI(at root: URL, paths: DDIPaths, manager: FileManager) {
+        let marker = root.deletingLastPathComponent()
+            .appendingPathComponent("HuskBundledDDI.seeded")
+        guard !manager.fileExists(atPath: marker.path) else { return }
+
+        let wanted: [(String, String)] = [
+            ("BuildManifest.plist", paths.manifestPath),
+            ("Image.dmg", paths.imagePath),
+            ("Image.dmg.cryptex_info", paths.cryptexInfoPath),
+            ("Image.dmg.root_hash", paths.rootHashPath),
+            ("Image.dmg.trustcache", paths.trustcachePath),
+        ]
+
+        // The bundle copy is flat, so the plain name is the whole path to it.
+        var seeded = 0
+        for (name, destination) in wanted {
+            let source = Bundle.main.bundleURL.appendingPathComponent(name)
+            guard manager.fileExists(atPath: source.path) else { continue }
+            let target = URL(fileURLWithPath: destination)
+            try? manager.createDirectory(at: target.deletingLastPathComponent(),
+                                         withIntermediateDirectories: true)
+            try? manager.removeItem(at: target)
+            if (try? manager.copyItem(at: source, to: target)) != nil { seeded += 1 }
+        }
+
+        guard seeded == wanted.count else {
+            NSLog("[HuskJIT] bundled developer disk image incomplete: %d of %d",
+                  seeded, wanted.count)
+            return
+        }
+        manager.createFile(atPath: marker.path, contents: Data())
+        NSLog("[HuskJIT] seeded the bundled developer disk image")
     }
 }
 

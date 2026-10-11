@@ -148,6 +148,13 @@ jobs:
       - name: Fix script permissions
         run: chmod +x scripts/*.sh
 
+      # Before anything regenerates the project: packaging runs `xcodegen
+      # generate`, and project.yml points a resource phase at this directory.
+      # The helper seeds its DDI cache from the bundle, so the first mount does
+      # not depend on the phone's own route to github.com.
+      - name: Fetch the Developer Disk Image
+        run: bash scripts/fetch_ddi.sh
+
       - name: Build everything and package the IPA
         run: |
           bash scripts/ci_build.sh "$GITHUB_WORKSPACE/build/Husk.ipa"

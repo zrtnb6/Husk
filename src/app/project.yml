@@ -265,6 +265,14 @@ targets:
     deploymentTarget: "26.0"
     sources:
       - path: HuskJITHelper
+        excludes:
+          - "Resources/**"
+      # The Developer Disk Image the helper mounts before attaching, fetched by
+      # scripts/fetch_ddi.sh. Copied flat into the bundle -- not as a folder
+      # reference -- so Bundle.url(forResource:) finds it at the bundle root,
+      # the way StikJIT's own script lookup has to.
+      - path: HuskJITHelper/Resources/DDI
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: $(HUSK_BUNDLE_IDENTIFIER).JITHelper

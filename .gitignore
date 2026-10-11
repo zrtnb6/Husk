@@ -11,6 +11,9 @@ third_party/utm-qemu/
 # Guest images (large, redistributable only from upstream)
 guests/
 
+# Developer Disk Image, bundled into the JIT helper (scripts/fetch_ddi.sh)
+src/app/HuskJITHelper/Resources/DDI/
+
 # Xcode
 *.xcuserdatad
 DerivedData/

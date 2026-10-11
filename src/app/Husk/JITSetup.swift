@@ -378,7 +378,29 @@ final class JITCoordinator: ObservableObject {
     /// explanation (the helper's own message is already in the log).
     private func helperFailure(_ message: String) -> String {
         connectionProblem = ConnectionProblem(helperMessage: message)
-        return connectionProblem?.message ?? message
+        return connectionProblem?.message ?? Self.translatedHelperMessage(message)
+    }
+
+    /// StikJIT raises its errors in English and Husk prints them verbatim, so
+    /// the two an install actually runs into are stated in the app's language
+    /// here. Longest match first -- the phrased one carries the colon with it,
+    /// so the sentence reads as one line rather than English punctuation in the
+    /// middle of it. Anything unmatched passes through untouched.
+    private static let helperMessageTranslations: [(String, String)] = [
+        ("Failed to download Developer Disk Image: ", "下载开发者磁盘映像失败："),
+        ("Failed to download Developer Disk Image", "下载开发者磁盘映像失败"),
+        ("DDI cryptex assets could not be loaded from ",
+         "无法从以下位置载入开发者磁盘映像的 cryptex 资源："),
+        ("The bundled JIT script could not be loaded from the StikJIT framework.",
+         "无法从 StikJIT 框架中载入内置的 JIT 脚本。"),
+    ]
+
+    private static func translatedHelperMessage(_ message: String) -> String {
+        for (english, chinese) in helperMessageTranslations
+        where message.contains(english) {
+            return message.replacingOccurrences(of: english, with: chinese)
+        }
+        return message
     }
 
     /// Polls CS_DEBUGGED until it is set or `timeout` passes.
