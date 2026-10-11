@@ -179,9 +179,14 @@ jobs:
             echo "::error::the JIT helper is missing the bundled Developer Disk Image"
             exit 1
           }
+          # unzip -l prints the full archive path, so match the tail of the line
+          # rather than the whole last field, and anchor it so Image.dmg does
+          # not answer for Image.dmg.trustcache.
           check() {
             local got
-            got=$(awk -v n="HuskJITHelper.appex/DDI/$1" '$NF == n { print $1 }' "$LIST")
+            got=$(awk -v name="$1" \
+                     '$0 ~ ("HuskJITHelper[.]appex/DDI/" name "$") { print $1 }' \
+                     "$LIST" | head -1)
             if [ "$got" != "$2" ]; then
               echo "::error::$1 is ${got:-absent} bytes in the helper, expected $2"
               exit 1
