@@ -35,12 +35,37 @@ jobs:
       - name: Install build tools
         run: |
           brew install meson ninja pkg-config xcodegen qemu || true
+
+          # virglrenderer's src/gallium/meson.build calls
+          #   find_installation('python3', modules: ['yaml'])
+          # and aborts the whole configure if the interpreter the runner puts on
+          # PATH (Homebrew's) cannot `import yaml`. Homebrew Python is PEP 668
+          # externally managed, hence --break-system-packages.
+          PY3="$(command -v python3)"
+          "$PY3" -m pip install --break-system-packages -U pyyaml \
+            || "$PY3" -m pip install --user -U pyyaml \
+            || true
+
           echo "--- versions ---"
           meson --version || true
           ninja --version || true
           pkg-config --version || true
           xcodegen --version || true
           qemu-img --version | head -1 || true
+          "$PY3" -c "import sys, yaml; print('python3', sys.executable, '/ pyyaml', yaml.__version__)"
+
+          # Fail here, in the first minute, rather than eleven minutes into the
+          # build when the missing piece finally gets used. qemu-img is needed by
+          # the app target's pre-build phase (it stamps the qcow2 seeds); meson and
+          # ninja by every meson stage; xcodegen regenerates the .pbxproj.
+          missing=""
+          for t in meson ninja pkg-config xcodegen qemu-img python3 cargo rustc; do
+            command -v "$t" >/dev/null 2>&1 || missing="$missing $t"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::missing build tools:$missing"
+            exit 1
+          fi
 
       - name: Add Rust iOS target
         run: |
@@ -49,7 +74,7 @@ jobs:
 
       - name: Restore dependency cache
         id: cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             third_party/build
@@ -83,3 +108,22 @@ jobs:
             build/logs
           retention-days: 14
           if-no-files-found: error
+
+      # actions/cache's own post step only writes when the job is green, so every
+      # run that died late (ANGLE, virgl, QEMU, ...) threw away the ~25 minutes of
+      # compiled dependencies and ANGLE it had already done, and the retry paid for
+      # them again. Save unconditionally instead. Every stage in ci_build.sh is
+      # guarded by an artefact or a stamp under build/stamps, so a half-finished
+      # tree is resumed safely rather than trusted: a component without its stamp
+      # is rebuilt from scratch.
+      - name: Save dependency cache
+        if: always() && steps.cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            third_party/build
+            third_party/sources
+            third_party/gpu
+            build
+            guests
+          key: ${{ steps.cache.outputs.cache-primary-key }}
