@@ -76,7 +76,7 @@ struct OnboardingView: View {
                             onDone()
                         }
                     } label: {
-                        Text(page < pages - 1 ? "Continue" : "Start using Husk")
+                        Text(page < pages - 1 ? "继续" : "开始使用 Husk")
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(.horizontal, 28)
@@ -110,10 +110,10 @@ struct OnboardingView: View {
                     .shadow(color: Theme.accent.opacity(0.35), radius: 22, y: 10)
             }
             Text("Husk").font(.system(size: 40, weight: .semibold, design: .rounded))
-            Text("Android apps, on your iPhone.")
+            Text("在你的 iPhone 上运行 Android 应用。")
                 .font(.title3).foregroundStyle(.secondary)
-            Text("Husk runs a real Android system and opens APKs inside it. "
-               + "A few questions first — all of them can be changed later in Settings.")
+            Text("Husk 会运行一整套真实的 Android 系统，并在其中打开 APK。"
+               + "先回答几个问题——之后都可以在「设置」中修改。")
                 .font(.callout).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 34).padding(.top, 4)
@@ -124,7 +124,7 @@ struct OnboardingView: View {
     private var choices: some View {
         ScrollView {
             VStack(spacing: 14) {
-                Text("How should Husk behave?")
+                Text("Husk 该如何运作？")
                     .font(.title2.weight(.semibold))
                     .padding(.top, 34).padding(.bottom, 6)
 
@@ -191,10 +191,10 @@ struct OnboardingView: View {
             Image(systemName: "bolt.fill")
                 .font(.system(size: 54))
                 .foregroundStyle(Theme.accent)
-            Text("Turn on JIT").font(.largeTitle.weight(.semibold))
-            Text("Android and Translation Layer games need JIT, which on iOS only an attached debugger can grant. "
-               + "StikJIT is built into Husk and is the recommended way: it turns JIT on from inside the app, "
-               + "with no computer and no other app. StikDebug and TrollStore work too.")
+            Text("开启 JIT").font(.largeTitle.weight(.semibold))
+            Text("Android 和转译层游戏都需要 JIT，而在 iOS 上只有已附加的调试器才能授予它。"
+               + "StikJIT 内置于 Husk，是推荐方式：它能在应用内直接开启 JIT，"
+               + "不需要电脑，也不需要其他应用。StikDebug 和 TrollStore 同样可行。")
                 .font(.callout).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 34)
@@ -202,7 +202,7 @@ struct OnboardingView: View {
                 Label(state, systemImage: "checkmark.circle.fill")
                     .font(.callout.weight(.medium)).foregroundStyle(.green)
             }
-            Button(jitState == nil ? "Set Up StikJIT Now" : "Change JIT Setup") { settingUpJIT = true }
+            Button(jitState == nil ? "立即配置 StikJIT" : "更改 JIT 配置") { settingUpJIT = true }
                 .font(.body.weight(.semibold))
                 .foregroundStyle(Theme.accent)
                 .padding(.top, 4)
@@ -217,9 +217,9 @@ struct OnboardingView: View {
                 .font(.system(size: 62))
                 .foregroundStyle(Theme.accent)
             Text("Ready").font(.largeTitle.weight(.semibold))
-            Text("If JIT is not on when Android starts, Husk turns it on with the "
-               + "method you chose, or walks you through setting one up. You can "
-               + "change it any time in Settings › JIT & sideload.")
+            Text("如果 Android 启动时 JIT 尚未开启，Husk 会用你选择的"
+               + "方式开启它，或引导你完成配置。你也可以随时在"
+               + "「设置 › JIT 与侧载」中更改。")
                 .font(.callout).foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 34)

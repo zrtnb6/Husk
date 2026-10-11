@@ -15,13 +15,13 @@ struct DiscoverView: View {
     var body: some View {
         Group {
             if manager.isLoading && manager.sources.isEmpty {
-                ProgressView("Fetching Repositories…")
+                ProgressView("正在获取软件源…")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if manager.sources.isEmpty {
-                EmptyState(title: "No Repositories",
-                           message: "Add a source to start discovering apps.",
+                EmptyState(title: "没有软件源",
+                           message: "添加一个软件源即可开始发现应用。",
                            systemImage: "tray",
-                           actionTitle: "Add Source",
+                           actionTitle: "添加软件源",
                            action: { showingAddSource = true })
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -31,7 +31,7 @@ struct DiscoverView: View {
         .background(Theme.backdrop)
         .navigationTitle("Discover")
         .navigationBarTitleDisplayMode(.large)
-        .searchable(text: $searchText, prompt: "Search \(totalAppCount) apps")
+        .searchable(text: $searchText, prompt: "搜索 \(totalAppCount) 个应用")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button { Task { await manager.fetchSources() } } label: {
@@ -39,10 +39,10 @@ struct DiscoverView: View {
                 }
                 Menu {
                     Button { showingAddSource = true } label: {
-                        Label("Add Source", systemImage: "plus")
+                        Label("添加软件源", systemImage: "plus")
                     }
                     Button { showingSources = true } label: {
-                        Label("Manage Repositories", systemImage: "list.bullet")
+                        Label("管理软件源", systemImage: "list.bullet")
                     }
                 } label: { Label("Repositories", systemImage: "ellipsis.circle") }
             }
@@ -80,7 +80,7 @@ struct DiscoverView: View {
                             }
                         } icon: { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange) }
                     }
-                } header: { Text("Could Not Load") }
+                } header: { Text("无法加载") }
             }
         }
         .listStyle(.insetGrouped)
@@ -109,7 +109,7 @@ struct DiscoverView: View {
             Text(source.name)
         } footer: {
             if debouncedSearchText.isEmpty && apps.count > 50 {
-                Text("Search to see \(apps.count - 50) more apps.")
+                Text("搜索可查看另外 \(apps.count - 50) 个应用。")
             }
         }
     }
@@ -174,9 +174,9 @@ struct DiscoverView: View {
                     TextField("https://f-droid.org/repo/index-v1.json", text: $newSourceURL)
                         .keyboardType(.URL).textInputAutocapitalization(.never).autocorrectionDisabled()
                 } header: {
-                    Text("Source URL")
+                    Text("软件源地址")
                 } footer: {
-                    Text("Paste any F-Droid-compatible repository index URL.")
+                    Text("粘贴任意兼容 F-Droid 的软件源索引地址。")
                 }
 
                 Section("Presets") {
@@ -200,7 +200,7 @@ struct DiscoverView: View {
                     }
                 }
             }
-            .navigationTitle("Add Source")
+            .navigationTitle("添加软件源")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -231,14 +231,14 @@ struct DiscoverView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             if let source = manager.sources.first(where: { $0.identifier == url }) {
                                 Text(source.name).font(.body.weight(.medium))
-                                Text("\(source.apps.count) apps").font(.caption).foregroundStyle(.secondary)
+                                Text("\(source.apps.count) 个应用").font(.caption).foregroundStyle(.secondary)
                             }
                             Text(url).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
                         }
                         .padding(.vertical, 2)
                     }
                     .onDelete { manager.sourceURLs.remove(atOffsets: $0) }
-                } header: { Text("Active Repositories") }
+                } header: { Text("已启用的软件源") }
             }
             .navigationTitle("Repositories")
             .navigationBarTitleDisplayMode(.inline)

@@ -44,8 +44,8 @@ struct JITCard: View {
                     .background(Color.accentColor.opacity(0.16), in: Circle())
                 Button { jit.showSetup = true } label: {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("JIT is off").font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
-                        Text(jit.busy ? (jit.status ?? "Turning on JIT…") : "Games need it. \(offered == .builtIn ? "StikJIT" : offered.title) turns it on.")
+                        Text("JIT 已关闭").font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                        Text(jit.busy ? (jit.status ?? "正在开启 JIT…") : "游戏需要它。由 \(offered == .builtIn ? "StikJIT" : offered.title) 来开启。")
                             .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -59,7 +59,7 @@ struct JITCard: View {
                         if offered == .builtIn, HuskBuiltInJIT.isAvailable { jit.method = .builtIn }
                         jit.enable()
                     } label: {
-                        Text("Turn On")
+                        Text("开启")
                             .font(.subheadline.weight(.bold))
                             .foregroundStyle(.white)
                             .padding(.horizontal, 14)
@@ -107,8 +107,8 @@ struct JITCard: View {
                 .font(.title2)
                 .foregroundStyle(.green)
             VStack(alignment: .leading, spacing: 2) {
-                Text("JIT is on").font(.headline)
-                Text("Games and Android can run.").font(.subheadline).foregroundStyle(.secondary)
+                Text("JIT 已开启").font(.headline)
+                Text("游戏和 Android 都可以运行了。").font(.subheadline).foregroundStyle(.secondary)
             }
             Spacer(minLength: 0)
         }
@@ -125,7 +125,7 @@ struct JITCard: View {
                 }
                 VStack(alignment: .leading, spacing: 4) {
                     Text(offered == .builtIn ? "StikJIT" : offered.title).font(.title3.weight(.semibold))
-                    Text("Turn on JIT").font(.subheadline).foregroundStyle(.secondary)
+                    Text("开启 JIT").font(.subheadline).foregroundStyle(.secondary)
                 }
                 Spacer(minLength: 0)
             }
@@ -141,7 +141,7 @@ struct JITCard: View {
             if jit.busy {
                 HStack(spacing: 10) {
                     ProgressView()
-                    Text(jit.status ?? "Turning on JIT…").font(.subheadline).foregroundStyle(.secondary)
+                    Text(jit.status ?? "正在开启 JIT…").font(.subheadline).foregroundStyle(.secondary)
                 }
             } else {
                 Button {
@@ -165,7 +165,7 @@ struct JITCard: View {
             }
 
             Button { jit.showSetup = true } label: {
-                Text("First time? See the setup, or use StikDebug or TrollStore instead")
+                Text("第一次使用？请查看配置说明，或改用 StikDebug 或 TrollStore")
                     .font(.footnote)
             }
         }

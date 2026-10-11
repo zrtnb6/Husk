@@ -64,10 +64,10 @@ struct DirectoryView: View {
             if loading && entries.isEmpty {
                 ProgressView()
             } else if let failure {
-                EmptyState(title: "Cannot Read This Folder", message: failure, systemImage: "lock")
+                EmptyState(title: "无法读取此文件夹", message: failure, systemImage: "lock")
             } else if entries.isEmpty {
-                EmptyState(title: "Empty", message: "Nothing is in this folder yet.",
-                           systemImage: "folder", actionTitle: "Import Files",
+                EmptyState(title: "空文件夹", message: "这个文件夹里还没有内容。",
+                           systemImage: "folder", actionTitle: "导入文件",
                            action: { showImportSheet = true })
             }
         }
@@ -86,7 +86,7 @@ struct DirectoryView: View {
         .huskFilePicker(isPresented: $importing) { urls in
             host.sendFiles(urls, to: path)
         }
-        .confirmationDialog("Install \(installing?.name ?? "")?",
+        .confirmationDialog("安装 \(installing?.name ?? "")？",
                             isPresented: Binding(get: { installing != nil },
                                                  set: { if !$0 { installing = nil } }),
                             titleVisibility: .visible) {
@@ -96,7 +96,7 @@ struct DirectoryView: View {
             }
             Button("Cancel", role: .cancel) { installing = nil }
         } message: {
-            Text("Android installs it from where it already is — nothing is copied.")
+            Text("Android 会直接从原位置安装，不会复制任何内容。")
         }
         .task(id: path) { load() }
         .refreshable { load() }
@@ -144,7 +144,7 @@ struct DirectoryView: View {
             HStack {
                 Text("Storage")
                 Spacer()
-                Text("\(AppDetailView.bytes(s.total - s.free)) of \(AppDetailView.bytes(s.total))")
+                Text("已用 \(AppDetailView.bytes(s.total - s.free)) / 共 \(AppDetailView.bytes(s.total))")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -220,9 +220,9 @@ struct ImportSheet: View {
                     Image(systemName: "doc.badge.plus")
                         .font(.system(size: 34, weight: .light))
                         .foregroundStyle(Color.accentColor)
-                    Text("Import Files").font(.headline)
-                    Text("They go to \((destination as NSString).lastPathComponent). "
-                       + "Unmodified APKs install from here too.")
+                    Text("导入文件").font(.headline)
+                    Text("它们会放入 \((destination as NSString).lastPathComponent)。"
+                       + "未修改的 APK 也可以从这里安装。")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -231,7 +231,7 @@ struct ImportSheet: View {
                 .padding(.vertical, 24)
                 .huskCard()
 
-                Button("Browse Files", action: onBrowse)
+                Button("浏览文件", action: onBrowse)
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
                 Spacer(minLength: 0)

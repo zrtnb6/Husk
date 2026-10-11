@@ -35,7 +35,7 @@ struct GoogleSignInSheet: View {
                     VStack(spacing: 16) {
                         ProgressView()
                             .scaleEffect(1.2)
-                        Text(manager.statusMessage ?? "Signing in to Google…")
+                        Text(manager.statusMessage ?? "正在登录 Google…")
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(Theme.text)
                     }
@@ -43,11 +43,11 @@ struct GoogleSignInSheet: View {
                     .background(Theme.surfaceHigh, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .shadow(radius: 20)
                 } else if webLoading {
-                    ProgressView("Loading Google Sign-In…")
+                    ProgressView("正在加载 Google 登录…")
                         .font(.footnote)
                 }
             }
-            .navigationTitle("Sign in with Google")
+            .navigationTitle("使用 Google 登录")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

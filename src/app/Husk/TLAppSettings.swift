@@ -176,7 +176,7 @@ struct TLAppSettingsView: View {
                 }
                 .padding(.vertical, 2)
             } footer: {
-                Text("What the game is called in Husk. The game itself is not changed.")
+                Text("游戏在 Husk 中显示的名称。不会改动游戏本身。")
             }
 
             Section {
@@ -186,35 +186,35 @@ struct TLAppSettingsView: View {
                 Picker("Resolution", selection: $settings.resolution) {
                     ForEach(TLAppSettings.Resolution.allCases) { Text($0.title).tag($0) }
                 }
-                Toggle("Performance readout", isOn: $settings.showStats)
-                Toggle("Keep the screen on", isOn: $settings.keepAwake)
+                Toggle("性能读数", isOn: $settings.showStats)
+                Toggle("保持屏幕常亮", isOn: $settings.keepAwake)
             } header: {
                 Text("Display")
             } footer: {
-                Text("\(settings.resolution.detail) Orientation and resolution apply the next time the game starts, and a game already "
-                   + "running in this session needs Husk closed and opened again.")
+                Text("\(settings.resolution.detail) 方向与分辨率会在游戏下次启动时生效；若游戏已在"
+                   + "本次会话中运行，则需要关闭并重新打开 Husk。")
             }
 
             Section {
-                Picker("Open In", selection: $settings.window) {
+                Picker("打开方式", selection: $settings.window) {
                     ForEach(TLAppSettings.WindowMode.allCases) { m in
-                        Text(m == .auto ? "Default (\(AppWindows.defaultWindowed ? "Window" : "Full Screen"))" : m.title).tag(m)
+                        Text(m == .auto ? "默认（\(AppWindows.defaultWindowed ? "窗口" : "全屏")）" : m.title).tag(m)
                     }
                 }
             } header: {
                 Text("Multitasking")
             } footer: {
-                Text("In a window, \(app.label) runs over Husk: move it by its title bar, resize it from the corner, and minimise it to "
-                   + "the dock at the edge of the screen while you use the rest of Husk.")
+                Text("在窗口模式下，\(app.label) 会浮在 Husk 之上：可拖动标题栏移动、从角落调整大小，并在你使用 Husk 其他部分时"
+                   + "最小化到屏幕边缘的停靠栏。")
             }
 
             Section {
-                Toggle("Hide the interface", isOn: $settings.cleanView)
+                Toggle("隐藏界面", isOn: $settings.cleanView)
             } header: {
                 Text("Screenshots")
             } footer: {
-                Text("The game starts with nothing over it: no bar, no controller, no readout. Tap with three fingers at once to bring "
-                   + "the bar back, and again to hide it. The Hide button in the bar does the same while playing.")
+                Text("游戏启动时界面上没有任何遮挡：没有状态栏、没有控制器、没有读数。同时用三根手指点按即可唤回"
+                   + "状态栏，再点一次则隐藏。游玩时状态栏上的「隐藏」按钮作用相同。")
             }
 
             if app.packageName == GeodeSupport.gamePackage {
@@ -224,14 +224,14 @@ struct TLAppSettingsView: View {
                 } header: {
                     Text("Mods")
                 } footer: {
-                    Text("Geode is the mod loader for Geometry Dash. With it on, Husk downloads Geode for this version of the "
-                       + "game, and mods are found and installed in the game itself, from Geode's button on the main menu. "
-                       + "Applies the next time the game starts.")
+                    Text("Geode 是 Geometry Dash 的 mod 加载器。开启后，Husk 会为该版本的"
+                       + "游戏下载 Geode，mod 则在游戏内通过主菜单上的 Geode 按钮查找并安装。"
+                       + "下次启动游戏时生效。")
                 }
             }
 
             Section {
-                Picker("On-screen controller", selection: $settings.pad) {
+                Picker("屏幕控制器", selection: $settings.pad) {
                     ForEach(TLAppSettings.PadMode.allCases) { Text($0.title).tag($0) }
                 }
                 if settings.pad != .never {
@@ -239,37 +239,37 @@ struct TLAppSettingsView: View {
                         Text("Opacity")
                         Slider(value: $settings.padOpacity, in: 0.3...1)
                     }
-                    Toggle("Vibrate on a press", isOn: $settings.haptics)
+                    Toggle("按下时振动", isOn: $settings.haptics)
                 }
             } header: {
                 Text("Controller")
             } footer: {
-                Text("Automatic offers the controller for games that cannot be played without one (Unreal Engine games), when no real "
-                   + "controller is connected. Always offers it for any game that understands one. A paired controller is always used.")
+                Text("「自动」会在没有连接真实控制器时，为必须有控制器的游戏（Unreal Engine 游戏）提供屏幕控制器。"
+                   + "对于任何支持控制器的游戏都会始终提供。已配对的控制器则始终优先使用。")
             }
 
             Section {
                 Button { AppClip.generate(for: app) } label: {
-                    Label("Generate App Clip", systemImage: "apps.iphone.badge.plus")
+                    Label("生成 App Clip", systemImage: "apps.iphone.badge.plus")
                 }
             } header: {
-                Text("Home Screen")
+                Text("主屏幕")
             } footer: {
-                Text("Puts \(app.label) on your Home Screen with its own icon. Tapping it opens Husk straight into the game. Husk "
-                   + "downloads a profile: open Settings, tap Profile Downloaded, then Install.")
+                Text("把 \(app.label) 以独立图标放到你的主屏幕上。点按它会直接打开 Husk 并进入游戏。Husk "
+                   + "会下载一个描述文件：打开「设置」，点按「已下载描述文件」，然后安装。")
             }
 
             Section {
                 DetailRow(label: "Saved by the game", value: dataSize, mono: false)
                 Button(role: .destructive) { confirmReset = true } label: {
-                    Label("Reset Game Data", systemImage: "arrow.counterclockwise")
+                    Label("重置游戏数据", systemImage: "arrow.counterclockwise")
                 }
                 .disabled(inUse || dataDirs.isEmpty)
             } header: {
                 Text("Data")
             } footer: {
-                Text(inUse ? "The game is loaded in this session. Close Husk completely and open it again to reset its data."
-                           : "Deletes what the game saved and downloaded here: saves, settings and caches. The game itself stays.")
+                Text(inUse ? "游戏正在本次会话中运行。请完全关闭 Husk 后重新打开，才能重置其数据。"
+                           : "删除游戏在此保存和下载的内容：存档、设置和缓存。游戏本身会保留。")
             }
         }
         .huskForm()
@@ -282,15 +282,15 @@ struct TLAppSettingsView: View {
         .onChange(of: nameFocused) { focused in if !focused { rename() } }
         .onDisappear { rename() }
         .task { dataSize = await Self.measure(dataDirs) }
-        .confirmationDialog("Reset the data of \(app.label)?", isPresented: $confirmReset, titleVisibility: .visible) {
-            Button("Reset Game Data", role: .destructive) {
+        .confirmationDialog("重置 \(app.label) 的数据？", isPresented: $confirmReset, titleVisibility: .visible) {
+            Button("重置游戏数据", role: .destructive) {
                 for dir in dataDirs { try? FileManager.default.removeItem(at: dir) }
                 HuskLog.log("tl", "reset the data of \(app.label)")
                 Task { dataSize = await Self.measure(dataDirs) }
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Saves, settings and caches the game made here are deleted.")
+            Text("游戏在此产生的存档、设置和缓存都会被删除。")
         }
     }
 
@@ -298,15 +298,15 @@ struct TLAppSettingsView: View {
     private var geodeStatus: some View {
         switch geode.current(app) {
         case .idle:
-            Button("Download Geode") { Task { await geode.prepare(app) } }
+            Button("下载 Geode") { Task { await geode.prepare(app) } }
         case .working(let what):
             HStack(spacing: 10) { ProgressView(); Text(what).foregroundStyle(.secondary) }
         case .ready(let version):
-            LabeledContent("Geode", value: "v\(version), ready")
+            LabeledContent("Geode", value: "v\(version)，已就绪")
         case .failed(let why):
             VStack(alignment: .leading, spacing: 6) {
                 Text(why).font(.footnote).foregroundStyle(.orange)
-                Button("Try Again") { Task { await geode.prepare(app) } }
+                Button("重试") { Task { await geode.prepare(app) } }
             }
         }
     }

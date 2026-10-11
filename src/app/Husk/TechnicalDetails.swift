@@ -54,7 +54,7 @@ struct TLTechnicalView: View {
     var body: some View {
         List {
             Section("Runtime") {
-                row("Runs With", report?.runnerName ?? "Not scanned")
+                row("运行方式", report?.runnerName ?? "未扫描")
                 row("Package", app.packageName ?? "—", mono: true)
                 row("Architectures", report.map { $0.abis.isEmpty ? "None (Java only)" : $0.abis.joined(separator: ", ") } ?? "—")
                 if let summary = report?.displaySummary {
@@ -67,10 +67,10 @@ struct TLTechnicalView: View {
                     row((apk as NSString).lastPathComponent, size(of: apk), mono: true)
                 }
                 if let r = report {
-                    row("Java Code", r.dexCount == 0 ? "None" : "\(r.dexCount) DEX file\(r.dexCount == 1 ? "" : "s"), \(bytes(r.dexBytes))")
-                    row("Android Libraries Used", "\(r.systemLibraries.count)")
+                    row("Java 代码", r.dexCount == 0 ? "无" : "\(r.dexCount) 个 DEX 文件，\(bytes(r.dexBytes))")
+                    row("使用的 Android 库", "\(r.systemLibraries.count)")
                 }
-                row("Saved Data", dataSize)
+                row("已保存的数据", dataSize)
             }
 
             if !arm64.isEmpty {
@@ -87,9 +87,9 @@ struct TLTechnicalView: View {
                         .padding(.vertical, 2)
                     }
                 } header: {
-                    Text("Native Libraries (\(arm64.count))")
+                    Text("原生库（\(arm64.count)）")
                 } footer: {
-                    Text("How each 64-bit library maps onto the iPhone: its relocations, the instructions Husk rewrites, and anything the loader works around.")
+                    Text("每个 64 位库是如何映射到 iPhone 上的：它的重定位、Husk 重写的指令，以及加载器绕过的部分。")
                 }
             }
 
@@ -103,19 +103,19 @@ struct TLTechnicalView: View {
                             .padding(.vertical, 4)
                     }
                     .frame(maxHeight: 320)
-                    Button { sharing = true } label: { Label("Share Log", systemImage: "square.and.arrow.up") }
+                    Button { sharing = true } label: { Label("分享日志", systemImage: "square.and.arrow.up") }
                 } else {
-                    Text(log == nil ? "Reading…" : "No log yet. It is written the first time the game runs.")
+                    Text(log == nil ? "正在读取…" : "暂无日志。游戏首次运行时会写入。")
                         .font(.footnote).foregroundStyle(.secondary)
                 }
             } header: {
-                Text("Last Run")
+                Text("上次运行")
             } footer: {
-                Text("The end of the log from the last time the game started. Share it when reporting a problem.")
+                Text("上次游戏启动日志的末尾部分。反馈问题时请一并分享。")
             }
         }
         .listStyle(.insetGrouped)
-        .navigationTitle("Technical Details")
+        .navigationTitle("技术详情")
         .navigationBarTitleDisplayMode(.inline)
         .task {
             let url = logURL, dir = app.dataDirectory

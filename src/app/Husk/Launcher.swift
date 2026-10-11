@@ -311,8 +311,8 @@ private struct JITTile: View {
                         if jit.busy { ProgressView() }
                     }
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(isOn ? "JIT on" : "JIT off").font(.headline).foregroundStyle(.primary)
-                        Text(isOn ? "via \(via)" : jit.busy ? (jit.status ?? "Turning on…") : "Tap to turn on")
+                        Text(isOn ? "JIT 已开" : "JIT 已关").font(.headline).foregroundStyle(.primary)
+                        Text(isOn ? "通过 \(via)" : jit.busy ? (jit.status ?? "正在开启…") : "点按开启")
                             .font(.footnote).foregroundStyle(.secondary).lineLimit(1)
                     }
                 }
@@ -378,7 +378,7 @@ private struct AndroidTile: View {
                         TileGlyph(systemImage: "apps.iphone", color: AndroidMark.green, size: 40)
                         VStack(alignment: .leading, spacing: 2) {
                             Text("Android").font(.headline).foregroundStyle(.primary)
-                            Text("For apps the translation layer can't run yet")
+                            Text("用于转译层暂时无法运行的应用")
                                 .font(.footnote).foregroundStyle(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
@@ -430,16 +430,16 @@ private struct WelcomeCard: View {
                 .frame(width: 60, height: 60)
                 .background(Color.accentColor.opacity(0.15), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             VStack(alignment: .leading, spacing: 6) {
-                Text("Add your first game")
+                Text("添加你的第一个游戏")
                     .font(.system(.title2, design: .rounded).weight(.bold))
-                Text("Pick an APK or a bundle (.xapk, .apkm, .apks), or share one to Husk from Files or Safari. Games run "
-                   + "straight on your iPhone. Other apps run inside Android.")
+                Text("选择 APK 或捆绑包（.xapk、.apkm、.apks），也可以从「文件」或 Safari 共享到 Husk。游戏会直接"
+                   + "在你的 iPhone 上运行，其他应用则在 Android 中运行。")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Button { router.addSomething() } label: {
-                Text("Add a Game or App").frame(maxWidth: .infinity)
+                Text("添加游戏或应用").frame(maxWidth: .infinity)
             }
             .buttonStyle(PrimaryButtonStyle())
         }
@@ -456,7 +456,7 @@ private struct ShelfHeader: View {
         HStack(alignment: .firstTextBaseline) {
             Text(title).font(.system(.title3, design: .rounded).weight(.bold))
             Spacer()
-            Button("See All", action: seeAll).font(.subheadline.weight(.semibold))
+            Button("查看全部", action: seeAll).font(.subheadline.weight(.semibold))
         }
         .padding(.bottom, -10)
     }
@@ -772,8 +772,8 @@ struct NoResults: View {
     var body: some View {
         VStack(spacing: 8) {
             Image(systemName: "magnifyingglass").font(.system(size: 28, weight: .light)).foregroundStyle(.secondary)
-            Text("No Results").font(.headline)
-            Text("Nothing here is called “\(query)”.").font(.subheadline).foregroundStyle(.secondary)
+            Text("没有结果").font(.headline)
+            Text("这里没有名为“\(query)”的内容。").font(.subheadline).foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 48)
@@ -817,6 +817,6 @@ private struct LibraryRouteView: View {
 
 private struct GoneView: View {
     var body: some View {
-        Text("This was removed.").foregroundStyle(.secondary).frame(maxWidth: .infinity, maxHeight: .infinity)
+        Text("此项已被移除。").foregroundStyle(.secondary).frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
