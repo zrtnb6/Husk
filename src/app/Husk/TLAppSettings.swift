@@ -168,7 +168,7 @@ struct TLAppSettingsView: View {
             Section {
                 HStack(spacing: 14) {
                     AppIcon(path: app.iconPath, size: 52)
-                    TextField("Name", text: $name)
+                    TextField("名称", text: $name)
                         .focused($nameFocused)
                         .submitLabel(.done)
                         .onSubmit { rename() }
@@ -180,16 +180,16 @@ struct TLAppSettingsView: View {
             }
 
             Section {
-                Picker("Orientation", selection: $settings.orientation) {
+                Picker("方向", selection: $settings.orientation) {
                     ForEach(TLAppSettings.Orientation.allCases) { Text($0.title).tag($0) }
                 }
-                Picker("Resolution", selection: $settings.resolution) {
+                Picker("分辨率", selection: $settings.resolution) {
                     ForEach(TLAppSettings.Resolution.allCases) { Text($0.title).tag($0) }
                 }
                 Toggle("性能读数", isOn: $settings.showStats)
                 Toggle("保持屏幕常亮", isOn: $settings.keepAwake)
             } header: {
-                Text("Display")
+                Text("显示")
             } footer: {
                 Text("\(settings.resolution.detail) 方向与分辨率会在游戏下次启动时生效；若游戏已在"
                    + "本次会话中运行，则需要关闭并重新打开 Husk。")
@@ -202,7 +202,7 @@ struct TLAppSettingsView: View {
                     }
                 }
             } header: {
-                Text("Multitasking")
+                Text("多任务")
             } footer: {
                 Text("在窗口模式下，\(app.label) 会浮在 Husk 之上：可拖动标题栏移动、从角落调整大小，并在你使用 Husk 其他部分时"
                    + "最小化到屏幕边缘的停靠栏。")
@@ -211,7 +211,7 @@ struct TLAppSettingsView: View {
             Section {
                 Toggle("隐藏界面", isOn: $settings.cleanView)
             } header: {
-                Text("Screenshots")
+                Text("截图")
             } footer: {
                 Text("游戏启动时界面上没有任何遮挡：没有状态栏、没有控制器、没有读数。同时用三根手指点按即可唤回"
                    + "状态栏，再点一次则隐藏。游玩时状态栏上的「隐藏」按钮作用相同。")
@@ -222,7 +222,7 @@ struct TLAppSettingsView: View {
                     Toggle("Geode", isOn: $settings.geode)
                     if settings.geode { geodeStatus }
                 } header: {
-                    Text("Mods")
+                    Text("模组")
                 } footer: {
                     Text("Geode 是 Geometry Dash 的 mod 加载器。开启后，Husk 会为该版本的"
                        + "游戏下载 Geode，mod 则在游戏内通过主菜单上的 Geode 按钮查找并安装。"
@@ -236,13 +236,13 @@ struct TLAppSettingsView: View {
                 }
                 if settings.pad != .never {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Opacity")
+                        Text("不透明度")
                         Slider(value: $settings.padOpacity, in: 0.3...1)
                     }
                     Toggle("按下时振动", isOn: $settings.haptics)
                 }
             } header: {
-                Text("Controller")
+                Text("控制器")
             } footer: {
                 Text("「自动」会在没有连接真实控制器时，为必须有控制器的游戏（Unreal Engine 游戏）提供屏幕控制器。"
                    + "对于任何支持控制器的游戏都会始终提供。已配对的控制器则始终优先使用。")
@@ -266,14 +266,14 @@ struct TLAppSettingsView: View {
                 }
                 .disabled(inUse || dataDirs.isEmpty)
             } header: {
-                Text("Data")
+                Text("数据")
             } footer: {
                 Text(inUse ? "游戏正在本次会话中运行。请完全关闭 Husk 后重新打开，才能重置其数据。"
                            : "删除游戏在此保存和下载的内容：存档、设置和缓存。游戏本身会保留。")
             }
         }
         .huskForm()
-        .navigationTitle("Settings")
+        .navigationTitle("设置")
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: settings) { $0.save(app.id) }
         .onChange(of: settings.geode) { on in
@@ -288,7 +288,7 @@ struct TLAppSettingsView: View {
                 HuskLog.log("tl", "reset the data of \(app.label)")
                 Task { dataSize = await Self.measure(dataDirs) }
             }
-            Button("Cancel", role: .cancel) { }
+            Button("取消", role: .cancel) { }
         } message: {
             Text("游戏在此产生的存档、设置和缓存都会被删除。")
         }

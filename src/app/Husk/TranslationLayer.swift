@@ -842,7 +842,7 @@ struct TLClassicAttemptView: View {
     private var bar: some View {
         HStack(spacing: 12) {
             Button { runner.stop(); dismiss() } label: {
-                Label("Close", systemImage: "xmark").font(.system(size: 13, weight: .semibold))
+                Label("关闭", systemImage: "xmark").font(.system(size: 13, weight: .semibold))
             }
             .tint(.white)
             Circle().fill(runner.statusColor).frame(width: 7, height: 7)
@@ -856,7 +856,7 @@ struct TLClassicAttemptView: View {
                 .tint(.white)
             }
             Button { toggleInterface() } label: {
-                Label("Hide", systemImage: "eye.slash").font(.system(size: 12, weight: .semibold))
+                Label("隐藏", systemImage: "eye.slash").font(.system(size: 12, weight: .semibold))
             }
             .tint(.white)
         }

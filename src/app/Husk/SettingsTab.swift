@@ -21,7 +21,7 @@ struct SettingsTab: View {
                     Text("Android 和转译层游戏需要 JIT。内置于 Husk 的 StikJIT 无需电脑即可开启。")
                 }
 
-                Section("General") {
+                Section("通用") {
                     row(DiscoverView(), "sparkle.magnifyingglass", .mint, "发现", "在 F-Droid 等软件源中查找应用")
                     row(LibrarySettings(), "square.grid.2x2.fill", .blue, "库", "你的应用及其图标")
                     row(PerformanceSettings(), "speedometer", .orange, "性能", "渲染器、声音")
@@ -47,20 +47,20 @@ struct SettingsTab: View {
                         }
                     }
                 } header: {
-                    Text("Multitasking")
+                    Text("多任务")
                 } footer: {
                     Text("应用和游戏会以窗口形式打开，可以移动、调整大小，并最小化到边缘的停靠栏，类似 LiveContainer 的多任务。"
                        + "每个应用都可以在自己的设置中覆盖此选项。")
                 }
 
-                Section("Emulator") {
+                Section("模拟器") {
                     row(InputSettings(), "hand.tap.fill", .indigo, "输入", "屏幕、触控、键盘")
                     row(NetworkSettings(), "globe", .green, "网络", "互联网与已保存的会话")
                     row(SavedMachineSettings(), "externaldrive.fill", .teal, "已保存的机器", "快照与自动保存")
                 }
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Settings")
+            .navigationTitle("设置")
         }
     }
 
@@ -153,7 +153,7 @@ struct LibrarySettings: View {
             }
         }
         .huskForm()
-        .navigationTitle("Library")
+        .navigationTitle("库")
     }
 }
 
@@ -170,7 +170,7 @@ struct PerformanceSettings: View {
     var body: some View {
         Form {
             Section {
-                Picker("Renderer", selection: $gpuMode) {
+                Picker("渲染器", selection: $gpuMode) {
                     Text("GPU").tag(true)
                     Text("CPU").tag(false)
                 }
@@ -180,7 +180,7 @@ struct PerformanceSettings: View {
                     HuskLog.log("ui", v ? "GPU renderer selected" : "CPU renderer selected")
                 }
             } header: {
-                Text("Renderer")
+                Text("渲染器")
             } footer: {
                 Text(gpuMode
                      ? "Android 通过 Metal 在真实 GPU 上绘制——帧率约为四倍。"
@@ -196,11 +196,11 @@ struct PerformanceSettings: View {
                 DetailRow(label: "Guest screen",
                           value: "\(QemuRunner.lastGuestRes.w)×\(QemuRunner.lastGuestRes.h)")
             } header: {
-                Text("Now")
+                Text("立即")
             }
 
             Section {
-                Toggle("Sound", isOn: $sound)
+                Toggle("声音", isOn: $sound)
                     .onChange(of: sound) { v in
                         UserDefaults.standard.set(v, forKey: "husk.sound")
                         HuskLog.log("ui", v ? "sound on" : "sound off")
@@ -212,14 +212,14 @@ struct PerformanceSettings: View {
                         }
                 }
             } header: {
-                Text("Sound")
+                Text("声音")
             } footer: {
                 Text("会添加一个声音设备。附加期间无法保存 Android——QEMU 拒绝为带声音设备的机器创建快照——因此每次"
                    + "启动都必须冷启动。无论开启还是关闭，都需要一次冷启动。")
             }
         }
         .huskForm()
-        .navigationTitle("Performance")
+        .navigationTitle("性能")
     }
 }
 
@@ -257,9 +257,9 @@ struct InputSettings: View {
     var body: some View {
         Form {
             Section {
-                Picker("Screen", selection: $landscapeGuest) {
-                    Text("Portrait").tag(false)
-                    Text("Landscape").tag(true)
+                Picker("屏幕", selection: $landscapeGuest) {
+                    Text("竖屏").tag(false)
+                    Text("横屏").tag(true)
                 }
                 .pickerStyle(.segmented)
                 .disabled(customRes)
@@ -269,7 +269,7 @@ struct InputSettings: View {
                                         : "guest panel will be portrait")
                 }
             } header: {
-                Text("Screen")
+                Text("屏幕")
             } footer: {
                 Text(customRes
                      ? "自定义分辨率会直接决定屏幕形状，因此开启时本选项不起作用。"
@@ -290,7 +290,7 @@ struct InputSettings: View {
                     }
 
                 if customRes {
-                    Picker("Preset", selection: Binding(
+                    Picker("预设", selection: Binding(
                         get: { presetIndex },
                         set: { i in
                             guard i >= 0, i < Self.presets.count else { return }
@@ -301,11 +301,11 @@ struct InputSettings: View {
                         ForEach(0..<Self.presets.count, id: \.self) { i in
                             Text(Self.presets[i].name).tag(i)
                         }
-                        Text("Custom").tag(-1)
+                        Text("自定义").tag(-1)
                     }
 
                     HStack {
-                        Text("Width")
+                        Text("宽度")
                         Spacer()
                         TextField("720", text: $widthText)
                             .keyboardType(.numberPad)
@@ -315,7 +315,7 @@ struct InputSettings: View {
                             .onChange(of: widthText) { _ in store() }
                     }
                     HStack {
-                        Text("Height")
+                        Text("高度")
                         Spacer()
                         TextField("1280", text: $heightText)
                             .keyboardType(.numberPad)
@@ -336,7 +336,7 @@ struct InputSettings: View {
 
                 DetailRow(label: "Running now", value: running)
             } header: {
-                Text("Resolution")
+                Text("分辨率")
             } footer: {
                 Text("显示面板在机器启动时构建，因此修改需要"
                    + "一次冷启动，而下一次保存会替换以"
@@ -352,11 +352,11 @@ struct InputSettings: View {
                    + "和指针目前尚未接入。")
                     .font(.footnote).foregroundStyle(.secondary)
             } header: {
-                Text("Controls")
+                Text("控制")
             }
         }
         .huskForm()
-        .navigationTitle("Input")
+        .navigationTitle("输入")
     }
 
     /// The panel the guest actually has, which only means anything while there
@@ -410,7 +410,7 @@ struct NetworkSettings: View {
             }
         }
         .huskForm()
-        .navigationTitle("Network")
+        .navigationTitle("网络")
     }
 }
 
@@ -440,7 +440,7 @@ struct JITSettings: View {
             .listRowBackground(Color.clear)
 
             Section {
-                Picker("Method", selection: $jit.method) {
+                Picker("方式", selection: $jit.method) {
                     ForEach(JITMethod.allCases) { Text($0.title).tag($0) }
                 }
                 DetailRow(label: "StikDebug",
@@ -559,7 +559,7 @@ struct JITSettings: View {
                    + "库而失败。")
                     .font(.footnote).foregroundStyle(.secondary)
             } header: {
-                Text("Sideloading")
+                Text("侧载")
             }
         }
         .huskForm()
@@ -641,7 +641,7 @@ struct SavedMachineSettings: View {
                             titleVisibility: .visible) {
             Button("GPU 机器", role: .destructive) { forget("gl", "GPU") }
             Button("软件机器", role: .destructive) { forget("sw", "software") }
-            Button("Cancel", role: .cancel) { }
+            Button("取消", role: .cancel) { }
         } message: {
             Text("Android 会冷启动一次，然后保存一份新的。")
         }
@@ -670,7 +670,7 @@ struct AppearanceSettings: View {
     var body: some View {
         Form {
             Section {
-                Picker("Appearance", selection: $appearance) {
+                Picker("外观", selection: $appearance) {
                     ForEach(Theme.Appearance.allCases) { Text($0.title).tag($0) }
                 }
                 .pickerStyle(.segmented)
@@ -678,7 +678,7 @@ struct AppearanceSettings: View {
                     HuskLog.log("ui", "appearance: \(v.rawValue)")
                 }
             } header: {
-                Text("Theme")
+                Text("主题")
             } footer: {
                 Text("随手机系统变化：白天浅色，夜间深色。访客自己的"
                    + "屏幕始终是深色的——它只是另一台手机的画面。")
@@ -741,7 +741,7 @@ struct AppearanceSettings: View {
                    + "一种样式。更改后 iOS 会显示自己的确认提示，该提示无法关闭。")
             }
         }
-        .navigationTitle("Appearance")
+        .navigationTitle("外观")
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -783,7 +783,7 @@ struct AboutSettings: View {
             }
 
             Section {
-                LabeledContent("Build", value: Bundle.main.commit)
+                LabeledContent("构建", value: Bundle.main.commit)
                 LabeledContent("访客镜像", value: GuestImage.imageVersion)
                 LabeledContent("渲染器",
                                value: runner.displayKind == .gl ? "GPU"
@@ -814,7 +814,7 @@ struct AboutSettings: View {
                    + "输出——排查任何问题都要依赖这三个文件。")
             }
         }
-        .navigationTitle("About")
+        .navigationTitle("关于")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showLogs) { LogView() }
     }

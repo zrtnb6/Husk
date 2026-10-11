@@ -24,7 +24,7 @@ struct FilesTab: View {
                                   title: (path as NSString).lastPathComponent)
                 }
                 .toolbar {
-                    ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } }
+                    ToolbarItem(placement: .cancellationAction) { Button("完成") { dismiss() } }
                 }
         }
     }
@@ -75,8 +75,8 @@ struct DirectoryView: View {
         .navigationBarTitleDisplayMode(path == FilesTab.root ? .large : .inline)
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
-                Button { load() } label: { Label("Refresh", systemImage: "arrow.clockwise") }
-                Button { showImportSheet = true } label: { Label("Import", systemImage: "plus") }
+                Button { load() } label: { Label("刷新", systemImage: "arrow.clockwise") }
+                Button { showImportSheet = true } label: { Label("导入", systemImage: "plus") }
             }
         }
         .sheet(isPresented: $showImportSheet) {
@@ -90,11 +90,11 @@ struct DirectoryView: View {
                             isPresented: Binding(get: { installing != nil },
                                                  set: { if !$0 { installing = nil } }),
                             titleVisibility: .visible) {
-            Button("Install") {
+            Button("安装") {
                 if let apk = installing { host.installFromGuest(apk.path, name: apk.name) }
                 installing = nil
             }
-            Button("Cancel", role: .cancel) { installing = nil }
+            Button("取消", role: .cancel) { installing = nil }
         } message: {
             Text("Android 会直接从原位置安装，不会复制任何内容。")
         }
@@ -142,7 +142,7 @@ struct DirectoryView: View {
     private func storage(_ s: (free: Int64, total: Int64)) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Storage")
+                Text("存储")
                 Spacer()
                 Text("已用 \(AppDetailView.bytes(s.total - s.free)) / 共 \(AppDetailView.bytes(s.total))")
                     .font(.subheadline)
@@ -238,10 +238,10 @@ struct ImportSheet: View {
             }
             .padding(16)
             .background(Theme.backdrop)
-            .navigationTitle("Import")
+            .navigationTitle("导入")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) { Button("Done") { dismiss() } }
+                ToolbarItem(placement: .topBarTrailing) { Button("完成") { dismiss() } }
             }
         }
     }

@@ -206,7 +206,7 @@ struct CrashReportSheet: View {
             }
             .navigationTitle("崩溃报告")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("完成") { dismiss() } } }
         }
         .task { file = CrashReport.writeReport(report) }
     }

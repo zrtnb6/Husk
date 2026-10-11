@@ -25,12 +25,12 @@ struct DownloadsTab: View {
                     ForEach(downloads.jobs) { job in
                         DownloadRow(job: job, speed: downloads.speed)
                             .swipeActions {
-                                Button(role: .destructive) { downloads.remove(job.id) } label: { Label("Remove", systemImage: "trash") }
+                                Button(role: .destructive) { downloads.remove(job.id) } label: { Label("移除", systemImage: "trash") }
                             }
                     }
                 } header: {
                     HStack {
-                        Text("Downloads")
+                        Text("下载")
                         Spacer()
                         if downloads.jobs.contains(where: \.complete) {
                             Button("清除已完成") { downloads.clearFinished() }.font(.caption).textCase(nil)
@@ -46,11 +46,11 @@ struct DownloadsTab: View {
                     }
                 }
             }
-            .navigationTitle("Downloads")
+            .navigationTitle("下载")
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button("完成") { dismiss() } }
                 ToolbarItem(placement: .primaryAction) {
-                    Button { adding = true } label: { Label("Add", systemImage: "plus") }
+                    Button { adding = true } label: { Label("添加", systemImage: "plus") }
                 }
             }
             .sheet(isPresented: $adding) { AddDownloadSheet() }
@@ -58,19 +58,19 @@ struct DownloadsTab: View {
     }
 
     @ViewBuilder private var updatesSection: some View {
-        Section("Updates") {
+        Section("更新") {
             if let release = updates.available {
                 HStack {
                     Label("Husk \(release.version)", systemImage: "arrow.down.app.fill")
                     Spacer()
-                    Button("View") { UIApplication.shared.open(release.page) }.buttonStyle(.bordered)
+                    Button("查看") { UIApplication.shared.open(release.page) }.buttonStyle(.bordered)
                 }
             }
             if guest.update.isSomething {
                 HStack {
                     Label(guest.update.title, systemImage: "shippingbox.fill")
                     Spacer()
-                    Button("Download") { guest.applyUpdate() }.buttonStyle(.bordered)
+                    Button("下载") { guest.applyUpdate() }.buttonStyle(.bordered)
                 }
             }
             if updates.available == nil && !guest.update.isSomething {
@@ -159,10 +159,10 @@ private struct AddDownloadSheet: View {
             .navigationTitle("添加下载")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .cancellationAction) { Button("取消") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     if working { ProgressView() } else {
-                        Button("Download") {
+                        Button("下载") {
                             working = true
                             Task {
                                 await downloads.add(link: link)

@@ -356,7 +356,7 @@ private struct DownloadsTile: View {
                 VStack(alignment: .leading, spacing: 18) {
                     TileGlyph(systemImage: "arrow.down", color: .indigo)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Downloads").font(.headline).foregroundStyle(.primary)
+                        Text("下载").font(.headline).foregroundStyle(.primary)
                         Text(status).font(.footnote).foregroundStyle(.secondary).lineLimit(1)
                     }
                 }
@@ -390,7 +390,7 @@ private struct AndroidTile: View {
                 Button {
                     if router.androidStarted { router.openGuest() } else { router.startAndroid() }
                 } label: {
-                    Text(router.androidStarted ? "Open" : "Start")
+                    Text(router.androidStarted ? "打开" : "启动")
                         .font(.subheadline.weight(.bold))
                         .foregroundStyle(.primary)
                         .padding(.horizontal, 14)
@@ -566,7 +566,7 @@ struct LibraryScreen: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
-                        Text("Library")
+                        Text("库")
                             .font(.system(size: 28, weight: .heavy, design: .rounded))
                         Spacer()
                         HeaderButton(systemImage: "plus") { router.addSomething() }
@@ -575,7 +575,7 @@ struct LibraryScreen: View {
                     .padding(.horizontal, 4)
                     .padding(.bottom, 6)
                     SearchField(text: $query, prompt: "Search games and apps")
-                    Picker("Show", selection: $router.libraryFilter) {
+                    Picker("显示", selection: $router.libraryFilter) {
                         ForEach(LibraryFilter.allCases) { Text($0.title).tag($0) }
                     }
                     .pickerStyle(.segmented)
@@ -758,7 +758,7 @@ struct SearchField: View {
             .frame(height: 38)
             .background(Color(uiColor: .tertiarySystemFill), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             if focused {
-                Button("Cancel") { text = ""; focused = false }
+                Button("取消") { text = ""; focused = false }
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }

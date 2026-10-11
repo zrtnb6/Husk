@@ -53,16 +53,16 @@ struct TLTechnicalView: View {
 
     var body: some View {
         List {
-            Section("Runtime") {
+            Section("运行时") {
                 row("运行方式", report?.runnerName ?? "未扫描")
-                row("Package", app.packageName ?? "—", mono: true)
-                row("Architectures", report.map { $0.abis.isEmpty ? "None (Java only)" : $0.abis.joined(separator: ", ") } ?? "—")
+                row("包名", app.packageName ?? "—", mono: true)
+                row("架构", report.map { $0.abis.isEmpty ? "无（仅 Java）" : $0.abis.joined(separator: ", ") } ?? "—")
                 if let summary = report?.displaySummary {
                     Text(summary).font(.footnote).foregroundStyle(.secondary)
                 }
             }
 
-            Section("Package") {
+            Section("包名") {
                 ForEach(app.apks, id: \.self) { apk in
                     row((apk as NSString).lastPathComponent, size(of: apk), mono: true)
                 }

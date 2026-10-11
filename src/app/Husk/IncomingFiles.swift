@@ -143,7 +143,7 @@ struct IncomingChooser: View {
                 incoming.sendToAndroid()
             }
 
-            Button("Cancel", role: .cancel) { incoming.discard() }
+            Button("取消", role: .cancel) { incoming.discard() }
                 .frame(maxWidth: .infinity)
                 .padding(.top, 2)
         }

@@ -51,7 +51,7 @@ struct GoogleSignInSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button("取消") {
                         dismiss()
                     }
                     .disabled(manager.isLoading)

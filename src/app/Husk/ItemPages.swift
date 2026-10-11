@@ -152,7 +152,7 @@ struct GamePage: View {
             }
 
             if !ShowcaseStore.shared.pictures(for: app.packageName).isEmpty {
-                Section("Screenshots") {
+                Section("截图") {
                     ShowcaseGallery(package: app.packageName)
                         .listRowInsets(EdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12))
                 }
@@ -174,7 +174,7 @@ struct GamePage: View {
                     Button { pickRestore() } label: { Label("恢复存档", systemImage: "clock.arrow.circlepath") }
                         .disabled(savesBusy || loadedNow)
                 } header: {
-                    Text("Saves")
+                    Text("存档")
                 } footer: {
                     if let savesMessage { Text(savesMessage) }
                     else if loadedNow { Text("\(app.label) 已在本次 Husk 运行中启动过。请关闭 Husk 后重新打开，才能恢复存档。") }
@@ -182,7 +182,7 @@ struct GamePage: View {
                 }
             }
 
-            Section("About") {
+            Section("关于") {
                 LabeledContent("运行方式", value: app.report?.runnerName ?? "未知")
                 if let st = GameStatusStore.shared.status(app.id) {
                     LabeledContent("上次结果") {
@@ -190,7 +190,7 @@ struct GamePage: View {
                     }
                 }
                 LabeledContent("上次游玩", value: app.lastPlayed.map { $0.formatted(date: .abbreviated, time: .shortened) } ?? "从未")
-                LabeledContent("Size", value: fileBytes(app.apks))
+                LabeledContent("大小", value: fileBytes(app.apks))
             }
 
             Section {
@@ -208,7 +208,7 @@ struct GamePage: View {
         }
         .confirmationDialog("替换 \(app.label) 的存档？", isPresented: Binding(get: { confirmRestore != nil }, set: { if !$0 { confirmRestore = nil } }),
                             titleVisibility: .visible) {
-            Button("Replace", role: .destructive) { if let url = confirmRestore { restore(url) } }
+            Button("替换", role: .destructive) { if let url = confirmRestore { restore(url) } }
         } message: {
             Text("\(app.label) 当前保存的内容将被这份备份替换。如果想保留，请先备份。")
         }
@@ -225,7 +225,7 @@ struct GamePage: View {
             Text("\(blockedBy ?? "另一个游戏") 仍在加载中，而每次会话只能运行一个游戏。Husk 将关闭；重新打开后 \(app.label) 会自动启动。")
         }
         .confirmationDialog("移除 \(app.label)？", isPresented: $confirmRemove, titleVisibility: .visible) {
-            Button("Remove", role: .destructive) {
+            Button("移除", role: .destructive) {
                 dismiss()
                 store.remove(app)
             }
@@ -370,17 +370,17 @@ struct AndroidAppPage: View {
             .heroRow()
 
             if !ShowcaseStore.shared.pictures(for: app.name).isEmpty {
-                Section("Screenshots") {
+                Section("截图") {
                     ShowcaseGallery(package: app.name)
                         .listRowInsets(EdgeInsets(top: 10, leading: 12, bottom: 10, trailing: 12))
                 }
             }
 
-            Section("About") {
-                LabeledContent("Version", value: live.version ?? "—")
-                LabeledContent("Size", value: live.sizeBytes.map { ByteCountFormatter.string(fromByteCount: $0, countStyle: .file) } ?? "—")
-                LabeledContent("Package", value: live.name)
-                if let b = live.bitness { LabeledContent("Architecture", value: b) }
+            Section("关于") {
+                LabeledContent("版本", value: live.version ?? "—")
+                LabeledContent("大小", value: live.sizeBytes.map { ByteCountFormatter.string(fromByteCount: $0, countStyle: .file) } ?? "—")
+                LabeledContent("包名", value: live.name)
+                if let b = live.bitness { LabeledContent("架构", value: b) }
             }
 
             Section {
@@ -399,7 +399,7 @@ struct AndroidAppPage: View {
 
             Section {
                 Button(role: .destructive) { confirmUninstall = true } label: {
-                    Label("Uninstall", systemImage: "trash")
+                    Label("卸载", systemImage: "trash")
                 }
                 .disabled(!canOpen)
             } footer: {
@@ -410,7 +410,7 @@ struct AndroidAppPage: View {
         .navigationTitle(live.label)
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog("卸载 \(live.label)？", isPresented: $confirmUninstall, titleVisibility: .visible) {
-            Button("Uninstall", role: .destructive) {
+            Button("卸载", role: .destructive) {
                 host.uninstall(app.name)
                 dismiss()
             }
@@ -486,7 +486,7 @@ struct AndroidSystemPage: View {
 
             if host.isReady {
                 Section {
-                    Button { router.openFiles(at: FilesTab.root) } label: { Label("Files", systemImage: "folder") }
+                    Button { router.openFiles(at: FilesTab.root) } label: { Label("文件", systemImage: "folder") }
                     Button { runner.saveState(reason: "asked from the Android page") } label: {
                         Label(runner.isSavingState ? "正在保存…" : "立即保存 Android", systemImage: "externaldrive.badge.checkmark")
                     }
@@ -496,10 +496,10 @@ struct AndroidSystemPage: View {
                 }
             }
 
-            Section("Settings") {
-                NavigationLink { PerformanceSettings() } label: { Label("Performance", systemImage: "speedometer") }
-                NavigationLink { InputSettings() } label: { Label("Input", systemImage: "hand.tap") }
-                NavigationLink { NetworkSettings() } label: { Label("Network", systemImage: "globe") }
+            Section("设置") {
+                NavigationLink { PerformanceSettings() } label: { Label("性能", systemImage: "speedometer") }
+                NavigationLink { InputSettings() } label: { Label("输入", systemImage: "hand.tap") }
+                NavigationLink { NetworkSettings() } label: { Label("网络", systemImage: "globe") }
                 NavigationLink { SavedMachineSettings() } label: { Label("已保存的机器", systemImage: "externaldrive") }
             }
 

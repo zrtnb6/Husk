@@ -29,13 +29,13 @@ struct DiscoverView: View {
             }
         }
         .background(Theme.backdrop)
-        .navigationTitle("Discover")
+        .navigationTitle("发现")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, prompt: "搜索 \(totalAppCount) 个应用")
         .toolbar {
             ToolbarItemGroup(placement: .topBarTrailing) {
                 Button { Task { await manager.fetchSources() } } label: {
-                    Label("Refresh", systemImage: "arrow.clockwise")
+                    Label("刷新", systemImage: "arrow.clockwise")
                 }
                 Menu {
                     Button { showingAddSource = true } label: {
@@ -44,7 +44,7 @@ struct DiscoverView: View {
                     Button { showingSources = true } label: {
                         Label("管理软件源", systemImage: "list.bullet")
                     }
-                } label: { Label("Repositories", systemImage: "ellipsis.circle") }
+                } label: { Label("软件源", systemImage: "ellipsis.circle") }
             }
         }
         .sheet(isPresented: $showingSources) { sourcesSheet }
@@ -140,7 +140,7 @@ struct DiscoverView: View {
             let progress = manager.downloadProgress[app.bundleIdentifier]
 
             if isInstalled {
-                Button("Open") {
+                Button("打开") {
                     let intent = "am start -n \(app.bundleIdentifier)/\(app.bundleIdentifier).MainActivity"
                     _ = try? GuestBridge.shared.shell(intent, timeout: 5)
                 }
@@ -156,7 +156,7 @@ struct DiscoverView: View {
                 }
                 .frame(width: 28, height: 28)
             } else {
-                Button("Get") { manager.downloadAndInstall(app: app) }
+                Button("获取") { manager.downloadAndInstall(app: app) }
                     .buttonStyle(.borderedProminent)
                     .buttonBorderShape(.capsule)
             }
@@ -179,7 +179,7 @@ struct DiscoverView: View {
                     Text("粘贴任意兼容 F-Droid 的软件源索引地址。")
                 }
 
-                Section("Presets") {
+                Section("预设") {
                     ForEach([
                         ("F-Droid", "https://f-droid.org/repo/index-v1.json"),
                         ("IzzyOnDroid", "https://apt.izzysoft.de/fdroid/repo/index-v1.json"),
@@ -204,10 +204,10 @@ struct DiscoverView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Cancel") { newSourceURL = ""; showingAddSource = false }
+                    Button("取消") { newSourceURL = ""; showingAddSource = false }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Add") {
+                    Button("添加") {
                         let url = newSourceURL
                         newSourceURL = ""
                         showingAddSource = false
@@ -240,11 +240,11 @@ struct DiscoverView: View {
                     .onDelete { manager.sourceURLs.remove(atOffsets: $0) }
                 } header: { Text("已启用的软件源") }
             }
-            .navigationTitle("Repositories")
+            .navigationTitle("软件源")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Done") { showingSources = false }
+                    Button("完成") { showingSources = false }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { showingSources = false; showingAddSource = true } label: {

@@ -24,7 +24,7 @@ struct StoreView: View {
                 }
             }
             .background(Theme.backdrop)
-            .navigationTitle("Store")
+            .navigationTitle("商店")
             .navigationBarTitleDisplayMode(.large)
             .searchable(text: $searchText, prompt: "搜索 Google Play")
             .toolbar {
@@ -82,11 +82,11 @@ struct StoreView: View {
                     }
                 } catch {}
             }
-            .alert("Error", isPresented: Binding(
+            .alert("错误", isPresented: Binding(
                 get: { manager.errorMessage != nil },
                 set: { if !$0 { manager.errorMessage = nil } }
             )) {
-                Button("OK", role: .cancel) { manager.errorMessage = nil }
+                Button("好", role: .cancel) { manager.errorMessage = nil }
             } message: {
                 Text(manager.errorMessage ?? "")
             }
@@ -297,7 +297,7 @@ struct StoreView: View {
                 Button {
                     manager.downloadAndInstall(app: app)
                 } label: {
-                    Text(app.isFree ? "GET" : app.formattedPrice)
+                    Text(app.isFree ? "获取" : app.formattedPrice)
                         .font(.subheadline.weight(.bold))
                         .padding(.horizontal, 14)
                         .padding(.vertical, 6)
@@ -369,7 +369,7 @@ struct PlayAppDetailSheet: View {
                     if !app.screenshotURLs.isEmpty {
                         Divider()
                         VStack(alignment: .leading, spacing: 10) {
-                            Text("Preview")
+                            Text("预览")
                                 .font(.headline)
                                 .foregroundStyle(Theme.text)
 
@@ -412,7 +412,7 @@ struct PlayAppDetailSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") { dismiss() }
+                    Button("完成") { dismiss() }
                 }
             }
         }
@@ -435,7 +435,7 @@ struct PlayAppDetailSheet: View {
                     manager.downloadAndInstall(app: app)
                     dismiss()
                 } label: {
-                    Text(app.isFree ? "GET" : app.formattedPrice)
+                    Text(app.isFree ? "获取" : app.formattedPrice)
                         .font(.headline)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 6)

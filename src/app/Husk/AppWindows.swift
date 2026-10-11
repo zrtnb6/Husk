@@ -305,8 +305,8 @@ private struct WindowDock: View {
                     }
             )
             .contextMenu {
-                Button { windows.restore() } label: { Label("Show", systemImage: "macwindow") }
-                Button(role: .destructive) { windows.close() } label: { Label("Close", systemImage: "xmark") }
+                Button { windows.restore() } label: { Label("显示", systemImage: "macwindow") }
+                Button(role: .destructive) { windows.close() } label: { Label("关闭", systemImage: "xmark") }
             }
             .accessibilityLabel("\(app.label), minimised")
             .accessibilityHint("Shows the window again")

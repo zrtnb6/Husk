@@ -173,7 +173,7 @@ struct JITSetupFlow: View {
                     .font(.system(size: 15, weight: .medium))
                     .foregroundStyle(Theme.textDim)
             case .paired:
-                Button("Continue") { path.append(.connect) }
+                Button("继续") { path.append(.connect) }
                     .buttonStyle(PrimaryButtonStyle())
             }
         }
@@ -241,7 +241,7 @@ struct JITSetupFlow: View {
             if let error = jit.error { outcome(error, ok: false) }
         } actions: {
             if jit.pairingSource == .imported {
-                Button("Continue") { path.append(.connect) }.buttonStyle(PrimaryButtonStyle())
+                Button("继续") { path.append(.connect) }.buttonStyle(PrimaryButtonStyle())
                 Button("选择其他文件") { importing = true }
                     .font(.system(size: 15, weight: .medium))
             } else {
@@ -322,7 +322,7 @@ struct JITSetupFlow: View {
             }
         } actions: {
             if attached {
-                Button("Done") { close() }.buttonStyle(PrimaryButtonStyle())
+                Button("完成") { close() }.buttonStyle(PrimaryButtonStyle())
             } else if jit.prepared {
                 Button { jit.enableBuiltIn() } label: { Label("启用 JIT", systemImage: "bolt.fill") }
                     .buttonStyle(PrimaryButtonStyle(enabled: !jit.busy))
@@ -452,7 +452,7 @@ struct JITSetupFlow: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Close") { close() }
+                Button("关闭") { close() }
             }
         }
     }

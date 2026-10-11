@@ -216,7 +216,7 @@ struct OnboardingView: View {
             Image(systemName: "checkmark.seal.fill")
                 .font(.system(size: 62))
                 .foregroundStyle(Theme.accent)
-            Text("Ready").font(.largeTitle.weight(.semibold))
+            Text("就绪").font(.largeTitle.weight(.semibold))
             Text("如果 Android 启动时 JIT 尚未开启，Husk 会用你选择的"
                + "方式开启它，或引导你完成配置。你也可以随时在"
                + "「设置 › JIT 与侧载」中更改。")

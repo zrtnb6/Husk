@@ -16,25 +16,25 @@ enum WhatsNew {
     static let version = "1.0.1"
     static let items: [Item] = [
         Item(symbol: "bag.fill", title: "Google Play",
-             detail: "Get games from the Store tab. Play Store downloads, with their split APKs and asset packs, run in the Translation Layer."),
-        Item(symbol: "checkmark.seal.fill", title: "Google Play services",
-             detail: "Games see Play services as present and signed out, so they stop asking for it and carry on."),
-        Item(symbol: "arrow.up.doc.fill", title: "Save backups",
-             detail: "Back up a game's saves to a .zip from its page, and restore them later or on another device."),
-        Item(symbol: "exclamationmark.bubble.fill", title: "Crash reports",
-             detail: "When a game takes Husk down, the next launch says what happened and gives you a report to share."),
-        Item(symbol: "checkmark.circle.fill", title: "Know what works",
-             detail: "The library marks each game with how it did last time: it plays, it crashed, or it did not start."),
-        Item(symbol: "gamecontroller.fill", title: "Godot games",
-             detail: "Games made with Godot 3 and 4 now run in the Translation Layer."),
-        Item(symbol: "slider.horizontal.below.square.and.square.filled", title: "Your own controls",
-             detail: "Move, resize and hide the on-screen controller's buttons, for each game."),
-        Item(symbol: "keyboard.fill", title: "Typing in Minecraft",
-             detail: "Chat, sign and world-name fields bring up the keyboard."),
-        Item(symbol: "arrow.left.arrow.right", title: "Switching games",
-             detail: "Close Husk to play another game, and it starts by itself when Husk opens."),
+             detail: "在「商店」标签页获取游戏。Play 商店的下载内容（含拆分 APK 与资源包）会在转译层中运行。"),
+        Item(symbol: "checkmark.seal.fill", title: "Google Play 服务",
+             detail: "游戏会认为 Play 服务已存在但未登录，因此不再反复索取，可以继续运行。"),
+        Item(symbol: "arrow.up.doc.fill", title: "存档备份",
+             detail: "在游戏页面把存档备份为 .zip，之后随时恢复，也可以转移到另一台设备。"),
+        Item(symbol: "exclamationmark.bubble.fill", title: "崩溃报告",
+             detail: "当游戏导致 Husk 退出时，下次启动会说明发生了什么，并给你一份可分享的报告。"),
+        Item(symbol: "checkmark.circle.fill", title: "了解哪些能跑",
+             detail: "库中的每个游戏都会标注上次的结果：正常运行、崩溃，还是没能启动。"),
+        Item(symbol: "gamecontroller.fill", title: "Godot 游戏",
+             detail: "用 Godot 3 和 4 制作的游戏现在可以在转译层中运行了。"),
+        Item(symbol: "slider.horizontal.below.square.and.square.filled", title: "自定义按键",
+             detail: "每个游戏都可以单独移动、调整大小和隐藏屏幕控制器上的按钮。"),
+        Item(symbol: "keyboard.fill", title: "在 Minecraft 中输入",
+             detail: "聊天、告示牌和世界名称等输入框都会唤出键盘。"),
+        Item(symbol: "arrow.left.arrow.right", title: "切换游戏",
+             detail: "关闭 Husk 即可换成另一个游戏，再次打开 Husk 时它会自动启动。"),
         Item(symbol: "puzzlepiece.extension.fill", title: "Geode",
-             detail: "Mods for Geometry Dash, Geode 5 included, turned on from the game's settings."),
+             detail: "为 Geometry Dash 提供 mod 支持（含 Geode 5），在游戏设置中开启。"),
     ]
 
     private static let seenKey = "husk.whatsNew.seen"
@@ -80,7 +80,7 @@ struct WhatsNewSheet: View {
                 .padding(.bottom, 20)
             }
             Button(action: done) {
-                Text("Continue").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 8)
+                Text("继续").font(.headline).frame(maxWidth: .infinity).padding(.vertical, 8)
             }
             .buttonStyle(.borderedProminent)
             .padding(.horizontal, 28)

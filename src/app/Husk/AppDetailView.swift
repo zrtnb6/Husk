@@ -114,8 +114,8 @@ struct AppDetailView: View {
             }
 
             Section {
-                LabeledContent("Version", value: live.version ?? "—")
-                LabeledContent("Size", value: live.sizeBytes.map(Self.bytes) ?? "—")
+                LabeledContent("版本", value: live.version ?? "—")
+                LabeledContent("大小", value: live.sizeBytes.map(Self.bytes) ?? "—")
                 LabeledContent("上次使用", value: live.lastUsed.map(Self.when) ?? "从未在 Husk 中打开")
             }
 
@@ -128,7 +128,7 @@ struct AppDetailView: View {
                 }
                 .disabled(!canOpen)
                 Button(role: .destructive) { confirmUninstall = true } label: {
-                    Label("Uninstall", systemImage: "trash")
+                    Label("卸载", systemImage: "trash")
                 }
                 .disabled(!canOpen)
             }
@@ -139,11 +139,11 @@ struct AppDetailView: View {
         .toolbar { ToolbarItem(placement: .topBarTrailing) { menu } }
         .confirmationDialog("卸载 \(live.label)？", isPresented: $confirmUninstall,
                             titleVisibility: .visible) {
-            Button("Uninstall", role: .destructive) {
+            Button("卸载", role: .destructive) {
                 host.uninstall(app.name)
                 dismiss()
             }
-            Button("Cancel", role: .cancel) { }
+            Button("取消", role: .cancel) { }
         } message: {
             Text("它的数据也会一并删除。之后请保存 Android，否则这次改动会在"
                + "下次启动时丢失。")
@@ -163,7 +163,7 @@ struct AppDetailView: View {
             .disabled(!canOpen)
             Divider()
             Button(role: .destructive) { confirmUninstall = true } label: {
-                Label("Uninstall", systemImage: "trash")
+                Label("卸载", systemImage: "trash")
             }
             .disabled(!canOpen)
         } label: {

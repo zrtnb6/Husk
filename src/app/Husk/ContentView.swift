@@ -48,19 +48,19 @@ struct ContentView: View {
             // why it appears instantly rather than reloading.
             TabView(selection: $router.tab) {
                 HomeView()
-                    .tabItem { Label("Home", systemImage: "house.fill") }
+                    .tabItem { Label("首页", systemImage: "house.fill") }
                     .tag(HuskTab.home)
 
                 LibraryScreen()
-                    .tabItem { Label("Library", systemImage: "square.grid.2x2.fill") }
+                    .tabItem { Label("库", systemImage: "square.grid.2x2.fill") }
                     .tag(HuskTab.library)
 
                 StoreView()
-                    .tabItem { Label("Store", systemImage: "cart.fill") }
+                    .tabItem { Label("商店", systemImage: "cart.fill") }
                     .tag(HuskTab.store)
 
                 SettingsTab()
-                    .tabItem { Label("Settings", systemImage: "gearshape.fill") }
+                    .tabItem { Label("设置", systemImage: "gearshape.fill") }
                     .tag(HuskTab.settings)
             }
             .opacity(showGuestScreen && started && runner.isRunning ? 0 : 1)
@@ -153,7 +153,7 @@ struct ContentView: View {
         .task(id: showcasePackages) { showcase.refresh(for: showcasePackages) }
         .alert("元数据已更新", isPresented: Binding(get: { showcase.shouldAsk && !showOnboarding },
                                                          set: { if !$0 { showcase.asked() } })) {
-            Button("Download") { showcase.downloadUpdates() }
+            Button("下载") { showcase.downloadUpdates() }
             Button("暂不", role: .cancel) { showcase.asked() }
         } message: {
             let n = showcase.updates.count
@@ -185,7 +185,7 @@ struct ContentView: View {
         .alert(guest.update.title, isPresented: Binding(
                 get: { guest.update.isSomething },
                 set: { if !$0 { guest.dismissUpdate() } })) {
-            Button("Download") { guest.applyUpdate() }
+            Button("下载") { guest.applyUpdate() }
             Button("暂不", role: .cancel) { guest.dismissUpdate() }
         } message: {
             Text(guest.update.detail)
@@ -426,7 +426,7 @@ struct GuestScreenView: View {
                                         "input keyevent KEYCODE_HOME", timeout: 20)
                                     HuskLog.log("ui", "sent HOME to Android")
                                 }
-                            } label: { Label("Home", systemImage: "house") }
+                            } label: { Label("首页", systemImage: "house") }
                             // Android will not reshape its panel, so when an app
                             // asks for landscape it turns its own composition
                             // inside a portrait frame. This turns it back.
@@ -446,7 +446,7 @@ struct GuestScreenView: View {
                             }
                             .disabled(runner.isSavingState)
                             Button { showLogs = true } label: {
-                                Label("Console", systemImage: "terminal")
+                                Label("控制台", systemImage: "terminal")
                             }
                         } label: {
                             Image(systemName: "ellipsis")
@@ -513,12 +513,12 @@ struct LogView: View {
                     }
                 }
             }
-            .navigationTitle("Logs")
+            .navigationTitle("日志")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     if isSheet {
-                        Button("Done") { dismiss() }
+                        Button("完成") { dismiss() }
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
@@ -574,7 +574,7 @@ struct ControlsSheet: View {
             Theme.backdrop
             VStack(spacing: 16) {
                 HStack {
-                    Text("Controls")
+                    Text("控制")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundStyle(Theme.text)
                     Spacer()
@@ -589,20 +589,20 @@ struct ControlsSheet: View {
                 }
 
                 RowGroup {
-                    row("hand.tap.fill", "Touch", on: true, available: true)
+                    row("hand.tap.fill", "触控", on: true, available: true)
                     RowDivider()
                     Button {
                         keyboard.toggle()
                         HuskLog.log("kbd", "keyboard \(keyboard ? "shown" : "hidden")")
                         dismiss()
                     } label: {
-                        row("keyboard", "Keyboard", on: keyboard, available: true)
+                        row("keyboard", "键盘", on: keyboard, available: true)
                     }
                     .buttonStyle(.plain)
                     RowDivider()
-                    row("gamecontroller", "Gamepad", on: false, available: false)
+                    row("gamecontroller", "手柄", on: false, available: false)
                     RowDivider()
-                    row("computermouse", "Mouse", on: false, available: false)
+                    row("computermouse", "鼠标", on: false, available: false)
                 }
 
                 Text("触控始终可用。手柄和指针目前还"
