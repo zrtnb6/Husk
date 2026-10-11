@@ -1,4 +1,15 @@
-# Husk
+# Husk_ZH
+
+> **简体中文汉化版 ｜ 非官方分支**
+>
+> 上游项目：[Leviidev/Husk](https://github.com/Leviidev/Husk)。Husk 让 Android 应用和游戏直接跑在 iPhone 上；本仓库只做一件事——**把界面汉化成简体中文**。
+>
+> 上游的界面文案全部硬编码在源码里，没有 `.lproj`、`.xcstrings` 或 `NSLocalizedString` 之类的本地化基建，所以这里的汉化是直接改源码完成的，而不是加载语言包。覆盖范围包括 App 界面与设置项、JIT 引导流程、报错与崩溃诊断信息、Android 侧提示，以及 Info.plist 的用途描述字符串。
+>
+> - 功能与上游完全一致，只替换显示文本，未改动任何逻辑
+> - 汉化产物由 GitHub Actions 云端构建，产出未签名 `Husk.ipa` / `Husk.tipa`
+> - 除界面语言以外的问题，请以上游仓库为准
+> - 许可沿用上游 GPL-2.0-or-later；上游更新后本分支会跟进合并
 
 <p align="center">
   <a href="https://trendshift.io/repositories/233057?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-233057" target="_blank" rel="noopener noreferrer">
