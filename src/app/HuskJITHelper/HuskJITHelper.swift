@@ -103,10 +103,13 @@ private enum HuskJITWork {
             ("Image.dmg.trustcache", paths.trustcachePath),
         ]
 
-        // The bundle copy is flat, so the plain name is the whole path to it.
+        // project.yml carries these as a folder reference, so the bundle keeps
+        // the DDI/ level and the files arrive byte for byte.
+        let bundled = Bundle.main.bundleURL
+            .appendingPathComponent("DDI", isDirectory: true)
         var seeded = 0
         for (name, destination) in wanted {
-            let source = Bundle.main.bundleURL.appendingPathComponent(name)
+            let source = bundled.appendingPathComponent(name)
             guard manager.fileExists(atPath: source.path) else { continue }
             let target = URL(fileURLWithPath: destination)
             try? manager.createDirectory(at: target.deletingLastPathComponent(),

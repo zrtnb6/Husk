@@ -166,6 +166,34 @@ jobs:
           echo "--- payload ---"
           unzip -l build/Husk.ipa | head -40
 
+          # The point of this build is that the helper carries the DDI, so the
+          # first mount is offline. Assert the exact sizes: the image is mounted
+          # as a unit, and Xcode silently rewrites a .plist it copies as an
+          # ordinary resource (BuildManifest.plist went 804,946 -> 140,960
+          # that way). A folder reference keeps all five intact; anything else
+          # should fail here rather than on the phone.
+          LIST=/tmp/ipa-listing.txt
+          unzip -l build/Husk.ipa > "$LIST"
+          echo "--- bundled DDI in the helper ---"
+          grep -E "HuskJITHelper\.appex/DDI/" "$LIST" || {
+            echo "::error::the JIT helper is missing the bundled Developer Disk Image"
+            exit 1
+          }
+          check() {
+            local got
+            got=$(awk -v n="HuskJITHelper.appex/DDI/$1" '$NF == n { print $1 }' "$LIST")
+            if [ "$got" != "$2" ]; then
+              echo "::error::$1 is ${got:-absent} bytes in the helper, expected $2"
+              exit 1
+            fi
+            echo "  ok  $1 = $got bytes"
+          }
+          check Image.dmg 15895040
+          check BuildManifest.plist 804946
+          check Image.dmg.trustcache 1895
+          check Image.dmg.cryptex_info 430
+          check Image.dmg.root_hash 229
+
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:

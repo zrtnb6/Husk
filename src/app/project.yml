@@ -268,11 +268,16 @@ targets:
         excludes:
           - "Resources/**"
       # The Developer Disk Image the helper mounts before attaching, fetched by
-      # scripts/fetch_ddi.sh. Copied flat into the bundle -- not as a folder
-      # reference -- so Bundle.url(forResource:) finds it at the bundle root,
-      # the way StikJIT's own script lookup has to.
+      # scripts/fetch_ddi.sh.
+      #
+      # A folder reference, deliberately: listed as ordinary resources, Xcode
+      # rewrites any .plist it sees -- BuildManifest.plist came out of the last
+      # build at 140,960 bytes instead of the 804,946 fetched -- and the DDI is
+      # mounted by the device as a unit, so every byte has to survive the copy.
+      # A folder reference copies the directory untouched. The helper reads the
+      # files at DDI/<name> inside its own bundle, so the extra level is free.
       - path: HuskJITHelper/Resources/DDI
-        buildPhase: resources
+        type: folder
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: $(HUSK_BUNDLE_IDENTIFIER).JITHelper
