@@ -1,0 +1,85 @@
+name: Build Unsigned IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ipa-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Cross-compile and package
+    runs-on: macos-15
+    timeout-minutes: 355
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Disk before
+        run: df -h /
+
+      - name: Free disk space
+        run: |
+          sudo rm -rf /Applications/Xcode_15*.app 2>/dev/null || true
+          sudo rm -rf ~/Library/Developer/Xcode/DerivedData 2>/dev/null || true
+          sudo rm -rf /Library/Developer/CoreSimulator/Profiles/Runtimes 2>/dev/null || true
+          sudo rm -rf /usr/local/share/dotnet 2>/dev/null || true
+          df -h /
+
+      - name: Install build tools
+        run: |
+          brew install meson ninja pkg-config xcodegen qemu || true
+          echo "--- versions ---"
+          meson --version || true
+          ninja --version || true
+          pkg-config --version || true
+          xcodegen --version || true
+          qemu-img --version | head -1 || true
+
+      - name: Add Rust iOS target
+        run: |
+          rustup target add aarch64-apple-ios
+          rustup target list --installed
+
+      - name: Restore dependency cache
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            third_party/build
+            third_party/sources
+            third_party/gpu
+            build
+            guests
+          key: husk-deps-${{ runner.os }}-${{ hashFiles('scripts/sources.sh', 'scripts/build_ios.sh', 'patches/**') }}
+
+      - name: Fix script permissions
+        run: chmod +x scripts/*.sh
+
+      - name: Build everything and package the IPA
+        run: |
+          bash scripts/ci_build.sh "$GITHUB_WORKSPACE/build/Husk.ipa"
+
+      - name: Verify the IPA
+        run: |
+          set -e
+          ls -lh build/Husk.ipa build/Husk.tipa
+          echo "--- payload ---"
+          unzip -l build/Husk.ipa | head -40
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Husk-IPA
+          path: |
+            build/Husk.ipa
+            build/Husk.tipa
+            build/logs
+          retention-days: 14
+          if-no-files-found: error
