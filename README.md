@@ -6,10 +6,20 @@
 >
 > 上游的界面文案全部硬编码在源码里，没有 `.lproj`、`.xcstrings` 或 `NSLocalizedString` 之类的本地化基建，所以这里的汉化是直接改源码完成的，而不是加载语言包。覆盖范围包括 App 界面与设置项、JIT 引导流程、报错与崩溃诊断信息、Android 侧提示，以及 Info.plist 的用途描述字符串。
 >
-> - 功能与上游完全一致，只替换显示文本，未改动任何逻辑
+> - 功能与上游一致，只替换显示文本；另有一处功能性增强——**内置 StikJIT 并打包开发者磁盘映像（DDI），JIT 配置离线可用**（见下）
 > - 汉化产物由 GitHub Actions 云端构建，产出未签名 `Husk.ipa` / `Husk.tipa`
 > - 除界面语言以外的问题，请以上游仓库为准
 > - 许可沿用上游 GPL-2.0-or-later；上游更新后本分支会跟进合并
+
+## 本汉化版的两个特点
+
+**① 界面全量简体中文。** 上游文案全部硬编码在 Swift 源码中，没有 `.lproj` / `.xcstrings` / `NSLocalizedString` 之类的本地化基建，所以这里直接改源码完成汉化，而不是加载语言包。覆盖 App 界面与设置项、JIT 引导流程、报错与崩溃诊断信息、Android 侧提示，以及 Info.plist 的用途描述字符串。
+
+**② 内置 StikJIT，并把开发者磁盘映像（DDI）一起打包进 App。**
+Husk 的 JIT 由 App 自带的 StikJIT 开启，**不需要第二个 App**，也无需连接电脑（iOS 26 及以上；iOS 27 可在机内自助配对）。
+上游实现会在首次配置时从 GitHub 现下 DDI（约 16 MB），网络受限时经常报 `Failed to download Developer Disk Image` / 「TLS 错误导致安全连接失败」。
+本分支把整份 DDI（`Xcode_iOS_DDI_Cryptex`，5 个文件）随 App 打包进 JIT 助手，首次运行自动铺好，**挂载 DDI 全程离线**，装完即可用。
+构建流程内含断言，校验这 5 个文件与上游逐字节一致，避免打包过程改动内容导致挂载失败。
 
 <p align="center">
   <a href="https://trendshift.io/repositories/233057?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-233057" target="_blank" rel="noopener noreferrer">
@@ -119,6 +129,7 @@ debugger. Husk can get it in several ways, and walks you through each one
 - **Built-in StikJIT** (iOS 26 and later): Husk turns JIT on itself, with no
   second app. On iOS 27 it pairs with your iPhone from Settings, with no
   computer. See [docs/06-built-in-jit.md](docs/06-built-in-jit.md).
+  — *本汉化版已把开发者磁盘映像（DDI）内置进 App，首次配置无需联网。*
 - **StikDebug**, installed alongside Husk.
 - **TrollStore or a Dopamine jailbreak** ("Allow JIT in Apps"), on iOS
   versions before 26 only. From iOS 26 only a debugger can grant JIT.
