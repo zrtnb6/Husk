@@ -80,24 +80,24 @@ struct JITCard: View {
     private var explanation: String {
         switch offered {
         case .trollStore:
-            return "TrollStore can turn JIT on for Husk: it opens Husk and enables it, with no computer. "
-                 + "In TrollStore's Settings, URL Scheme must be on."
+            return "TrollStore 可以为 Husk 开启 JIT：它打开 Husk 并启用 JIT，无需电脑。"
+                 + "在 TrollStore 的设置中，必须开启 URL Scheme。"
         case .jailbreak:
-            return "On a jailbroken device JIT is a setting. In Dopamine, turn on Allow JIT in Apps, then open Husk again."
+            return "在越狱设备上 JIT 是一个设置项。在 Dopamine 中开启“允许应用使用 JIT”，然后重新打开 Husk。"
         case .stikDebug:
-            return "StikDebug is installed, so Husk will open it to turn JIT on."
+            return "已安装 StikDebug，Husk 会打开它以开启 JIT。"
         default:
-            return "StikJIT is built into Husk. You can turn JIT on right here — no computer and no other app. "
-                 + "Games and Android both need it."
+            return "StikJIT 已内置于 Husk。你可以直接在这里开启 JIT——无需电脑，也无需其他应用。"
+                 + "游戏和 Android 都需要它。"
         }
     }
 
     private var buttonTitle: String {
         switch offered {
-        case .trollStore: return "Turn On JIT with TrollStore"
-        case .jailbreak: return "How to Allow JIT"
-        case .stikDebug: return "Turn On JIT with StikDebug"
-        default: return HuskBuiltInJIT.isAvailable ? "Turn On JIT with StikJIT" : "Turn On JIT"
+        case .trollStore: return "用 TrollStore 开启 JIT"
+        case .jailbreak: return "如何允许 JIT"
+        case .stikDebug: return "用 StikDebug 开启 JIT"
+        default: return HuskBuiltInJIT.isAvailable ? "用 StikJIT 开启 JIT" : "开启 JIT"
         }
     }
 

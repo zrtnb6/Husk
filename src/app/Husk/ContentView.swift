@@ -439,7 +439,7 @@ struct GuestScreenView: View {
                             }
                             Divider()
                             Button {
-                                QemuRunner.shared.saveState(reason: "asked from full screen")
+                                QemuRunner.shared.saveState(reason: "从全屏请求")
                             } label: {
                                 Label(runner.isSavingState ? "正在保存…" : "保存 Android",
                                       systemImage: "externaldrive.badge.checkmark")

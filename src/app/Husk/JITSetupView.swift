@@ -64,34 +64,34 @@ struct JITSetupFlow: View {
     // MARK: Choose
 
     private var choose: some View {
-        page(symbol: "bolt.fill", title: "Turn on JIT",
-             subtitle: "Android needs memory it can write and then run, which on iOS only an attached "
-                     + "debugger can grant. Choose how your \(device) gets one.") {
+        page(symbol: "bolt.fill", title: "开启 JIT",
+             subtitle: "Android 需要可写且可执行的内存，而在 iOS 上只有附加的 "
+                     + "调试器才能授予。请选择你的 \(device) 以何种方式获得。") {
             VStack(spacing: 10) {
                 let builtIn = HuskBuiltInJIT.unavailableReason
-                way("Pair on this \(device)", symbol: "iphone.radiowaves.left.and.right",
-                    detail: builtIn ?? (!OnDevicePairing.isSupported ? "Needs iOS 27 or later."
-                        : jit.pairingSource == .onDevice ? "Paired on this \(device)."
-                        : "No computer needed. Pairs from Settings in a minute."),
+                way("在此 \(device) 上配对", symbol: "iphone.radiowaves.left.and.right",
+                    detail: builtIn ?? (!OnDevicePairing.isSupported ? "需要 iOS 27 或更高版本。"
+                        : jit.pairingSource == .onDevice ? "已在此 \(device) 上配对。"
+                        : "无需电脑。一分钟内即可从设置中完成配对。"),
                     done: jit.pairingSource == .onDevice,
                     enabled: builtIn == nil && OnDevicePairing.isSupported) { path.append(.pairOnDevice) }
-                way("Use a pairing file", symbol: "doc.badge.plus",
-                    detail: builtIn ?? (jit.pairingSource == .imported ? "Pairing file imported."
-                        : "Import a pairing file made on a computer."),
+                way("使用配对文件", symbol: "doc.badge.plus",
+                    detail: builtIn ?? (jit.pairingSource == .imported ? "配对文件已导入。"
+                        : "导入在电脑上制作的配对文件。"),
                     done: jit.pairingSource == .imported,
                     enabled: builtIn == nil) { path.append(.importFile) }
-                way("Use StikDebug", symbol: "ant",
-                    detail: JITBootstrap.isStikDebugInstalled ? "StikDebug is installed."
-                        : "Enable JIT through the StikDebug app.",
+                way("使用 StikDebug", symbol: "ant",
+                    detail: JITBootstrap.isStikDebugInstalled ? "已安装 StikDebug。"
+                        : "通过 StikDebug 应用开启 JIT。",
                     done: jit.method == .stikDebug) { path.append(.stikDebug) }
-                way("Use TrollStore", symbol: "sparkles",
-                    detail: JITBootstrap.isTrollStoreInstalled ? "TrollStore is installed."
-                        : "For a Husk installed through TrollStore.",
+                way("使用 TrollStore", symbol: "sparkles",
+                    detail: JITBootstrap.isTrollStoreInstalled ? "已安装 TrollStore。"
+                        : "适用于通过 TrollStore 安装的 Husk。",
                     done: jit.method == .trollStore) { path.append(.trollStore) }
-                way("Use a jailbreak", symbol: "lock.open",
-                    detail: JITBootstrap.debuggedAtLaunch ? "JIT was already on when Husk opened."
-                        : JITBootstrap.isJailbroken ? "A jailbreak was found. Turn on Allow JIT in Apps."
-                        : "Dopamine can give every app JIT with one setting.",
+                way("使用越狱", symbol: "lock.open",
+                    detail: JITBootstrap.debuggedAtLaunch ? "Husk 打开时 JIT 已开启。"
+                        : JITBootstrap.isJailbroken ? "检测到越狱。请开启“允许应用使用 JIT”。"
+                        : "Dopamine 只需一个设置就能让每个应用获得 JIT。",
                     done: jit.method == .jailbreak || JITBootstrap.debuggedAtLaunch) { path.append(.jailbreak) }
             }
             if jit.hasPairing && HuskBuiltInJIT.isAvailable {
@@ -145,19 +145,19 @@ struct JITSetupFlow: View {
     }
 
     private var pairOnDevice: some View {
-        page(symbol: "iphone.radiowaves.left.and.right", title: "Pair on this \(device)",
-             subtitle: "Husk pretends to be a computer on your Wi-Fi, and your \(device) pairs with it "
-                     + "the way it would with a Mac.") {
+        page(symbol: "iphone.radiowaves.left.and.right", title: "在此 \(device) 上配对",
+             subtitle: "Husk 在你的 Wi-Fi 上伪装成一台电脑，你的 \(device) 与之配对，"
+                     + "就像与 Mac 配对一样。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Turn on Wi-Fi, tap **Start pairing** below and allow Local Network access.",
+                point(1, "打开 Wi-Fi，点击下方的 **开始配对**，并允许本地网络访问。",
                       done: pairing.phase != .idle)
-                point(2, "Open **Settings › Privacy & Security › Developer Mode**, scroll down and tap "
-                       + "**Pair with \(OnDevicePairing.hostName)**.",
+                point(2, "打开 **设置 › 隐私与安全性 › 开发者模式**，向下滚动并点击 "
+                       + "**与 \(OnDevicePairing.hostName) 配对**。",
                       done: pairing.isShowingPin || pairedOnDevice)
-                point(3, "Enter the code Husk shows. It also appears in a banner and a notification, "
-                       + "so you don't have to switch back.",
+                point(3, "输入 Husk 显示的验证码。它也会出现在横幅和通知中，"
+                       + "这样你就无需切回。",
                       done: pairedOnDevice)
-                point(4, "Come back to Husk.", done: pairedOnDevice)
+                point(4, "返回 Husk。", done: pairedOnDevice)
             }
             .padding(16).huskCard()
             pairingStatus
@@ -215,7 +215,7 @@ struct JITSetupFlow: View {
             .frame(maxWidth: .infinity)
             .padding(18).huskCard(high: true)
         case .paired(let name):
-            outcome("Paired with \(name)", ok: true)
+            outcome("已与 \(name) 配对", ok: true)
         case .failed(let message):
             outcome(message, ok: false)
         }
@@ -224,15 +224,15 @@ struct JITSetupFlow: View {
     // MARK: Import a pairing file
 
     private var importFile: some View {
-        page(symbol: "doc.badge.plus", title: "Use a pairing file",
-             subtitle: "A pairing file made on a computer lets Husk talk to this \(device) the same way.") {
+        page(symbol: "doc.badge.plus", title: "使用配对文件",
+             subtitle: "在电脑上制作的配对文件能让 Husk 以同样方式与此 \(device) 通信。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "On a computer, make this \(device)'s pairing file with the "
+                point(1, "在电脑上，用以下工具制作此 \(device) 的配对文件："
                        + "[StikDebug pairing-file guide](https://github.com/StikDebug/StikDebug-Guide/blob/main/pairing_file.md).",
                       done: jit.pairingSource == .imported)
-                point(2, "Save it to Files, or AirDrop it to this \(device).",
+                point(2, "将其保存到“文件”，或用隔空投送发送到此 \(device)。",
                       done: jit.pairingSource == .imported)
-                point(3, "Tap **Choose pairing file** and pick it.", done: jit.pairingSource == .imported)
+                point(3, "点击 **选择配对文件** 并选中它。", done: jit.pairingSource == .imported)
             }
             .padding(16).huskCard()
             Label("配对文件保存在 Husk 的「文档」文件夹中，只会发送给 Husk 自带的辅助程序。",
@@ -254,14 +254,14 @@ struct JITSetupFlow: View {
     // MARK: LocalDevVPN
 
     private var connect: some View {
-        page(symbol: "network.badge.shield.half.filled", title: "Connect LocalDevVPN",
-             subtitle: "Husk's helper reaches this \(device)'s debugging service through a local VPN. "
-                     + "Nothing leaves your \(device).") {
+        page(symbol: "network.badge.shield.half.filled", title: "连接 LocalDevVPN",
+             subtitle: "Husk 的助手通过本地 VPN 访问此 \(device) 的调试服务。"
+                     + "你的 \(device) 不会有任何数据外传。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Install [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString)) from the App Store.",
+                point(1, "从 App Store 安装 [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString))。",
                       done: LocalDevVPN.isInstalled)
-                point(2, "Tap **Connect LocalDevVPN**. It switches the VPN on and comes straight back to Husk.")
-                point(3, "Leave it connected whenever you turn JIT on.")
+                point(2, "点击 **连接 LocalDevVPN**。它会打开 VPN 并直接返回 Husk。")
+                point(3, "开启 JIT 时请保持其连接。")
             }
             .padding(16).huskCard()
         } actions: {
@@ -277,13 +277,13 @@ struct JITSetupFlow: View {
     private var attached: Bool { jit.attachGeneration > 0 || JITBootstrap.debuggedFlag }
 
     private var enable: some View {
-        page(symbol: "bolt.badge.checkmark", title: "Turn on JIT",
-             subtitle: "The first check downloads and mounts Apple's Developer Disk Image, "
-                     + "which can take a minute.") {
+        page(symbol: "bolt.badge.checkmark", title: "开启 JIT",
+             subtitle: "首次检查会下载并挂载 Apple 的开发者磁盘映像，"
+                     + "可能需要一分钟。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Tap **Check setup**. Husk checks LocalDevVPN and prepares the Developer Disk Image.",
+                point(1, "点击 **检查设置**。Husk 会检查 LocalDevVPN 并准备开发者磁盘映像。",
                       done: jit.prepared || attached)
-                point(2, "Tap **Enable JIT**. Husk's helper attaches and Android can start.", done: attached)
+                point(2, "点击 **启用 JIT**。Husk 的助手会附加，Android 即可启动。", done: attached)
             }
             .padding(16).huskCard()
 
@@ -295,7 +295,7 @@ struct JITSetupFlow: View {
                 }
                 .padding(16).huskCard(high: true)
             } else if attached {
-                outcome("JIT is on. Android can start.", ok: true)
+                outcome("JIT 已开启。Android 可以启动了。", ok: true)
             } else if let error = jit.error {
                 VStack(alignment: .leading, spacing: 10) {
                     outcome(error, ok: false)
@@ -338,15 +338,15 @@ struct JITSetupFlow: View {
     // MARK: StikDebug
 
     private var stikDebug: some View {
-        page(symbol: "ant", title: "Use StikDebug",
-             subtitle: "StikDebug is a separate app that attaches to Husk. Husk sends it the JIT script "
-                     + "itself, so nothing needs configuring for Husk inside StikDebug.") {
+        page(symbol: "ant", title: "使用 StikDebug",
+             subtitle: "StikDebug 是一个附加到 Husk 的独立应用。Husk 会把 JIT 脚本发送给它，"
+                     + "因此无需在 StikDebug 内为 Husk 做任何配置。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Install [StikDebug](https://github.com/StikDebug/StikDebug/releases/latest).",
+                point(1, "安装 [StikDebug](https://github.com/StikDebug/StikDebug/releases/latest)。",
                       done: JITBootstrap.isStikDebugInstalled)
-                point(2, "Import this \(device)'s pairing file into StikDebug.")
-                point(3, "Install and connect [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString)).")
-                point(4, "Whenever Android starts, Husk opens StikDebug, which attaches and comes back.")
+                point(2, "将此 \(device) 的配对文件导入 StikDebug。")
+                point(3, "安装并连接 [LocalDevVPN](\(LocalDevVPN.appStore.absoluteString))。")
+                point(4, "每当 Android 启动时，Husk 会打开 StikDebug，它附加后会返回。")
             }
             .padding(16).huskCard()
         } actions: {
@@ -362,17 +362,17 @@ struct JITSetupFlow: View {
     // MARK: TrollStore
 
     private var trollStore: some View {
-        page(symbol: "sparkles", title: "Use TrollStore",
-             subtitle: "TrollStore can enable JIT for apps it installed, with no pairing file, "
-                     + "VPN or computer.") {
+        page(symbol: "sparkles", title: "使用 TrollStore",
+             subtitle: "TrollStore 可以为其安装的应用开启 JIT，无需配对文件、"
+                     + "VPN 或电脑。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Install Husk.ipa through TrollStore, on an iOS version TrollStore supports. It carries the "
-                       + "entitlements TrollStore keeps, so the same file works there and in a sideloader.",
+                point(1, "在 TrollStore 支持的 iOS 版本上，通过 TrollStore 安装 Husk.ipa。它带有 "
+                       + "TrollStore 保留的授权，因此同一文件在它和侧载器中都能用。",
                       done: JITBootstrap.isInstalledWithTrollStore)
-                point(2, "In TrollStore's Settings, turn on URL Scheme. TrollStore ignores enable-jit requests without it.",
+                point(2, "在 TrollStore 的设置中开启 URL Scheme。否则 TrollStore 会忽略 enable-jit 请求。",
                       done: JITBootstrap.isTrollStoreInstalled)
-                point(3, "Whenever Android or a game starts, Husk asks TrollStore to enable JIT. TrollStore opens Husk, "
-                       + "attaches to it for a moment and lets go, which leaves it allowed to run code it wrote.")
+                point(3, "每当 Android 或游戏启动时，Husk 会请 TrollStore 开启 JIT。TrollStore 打开 Husk，"
+                       + "附加片刻后放手，从而使 Husk 获准运行它写入的代码。")
             }
             .padding(16).huskCard()
             if !JITBootstrap.isTrollStoreInstalled {
@@ -394,13 +394,13 @@ struct JITSetupFlow: View {
     // MARK: Jailbreak
 
     private var jailbreak: some View {
-        page(symbol: "lock.open", title: "Use a jailbreak",
-             subtitle: "On a device jailbroken with Dopamine, JIT is a setting: the jailbreak marks every app as "
-                     + "debugged when it opens, and a debugged app may run code it wrote. Husk needs nothing else.") {
+        page(symbol: "lock.open", title: "使用越狱",
+             subtitle: "在使用 Dopamine 越狱的设备上，JIT 是一个设置项：越狱会把每个应用在打开时标记为 "
+                     + "已调试，而已调试的应用可以运行它写入的代码。Husk 无需其他操作。") {
             VStack(alignment: .leading, spacing: 14) {
-                point(1, "Open Dopamine and go to its Settings.", done: JITBootstrap.isJailbroken)
-                point(2, "Turn on Allow JIT in Apps.")
-                point(3, "Close Husk completely and open it again. The setting applies to apps as they start.",
+                point(1, "打开 Dopamine 并进入其设置。", done: JITBootstrap.isJailbroken)
+                point(2, "开启“允许应用使用 JIT”。")
+                point(3, "完全关闭 Husk 再重新打开。该设置会在应用启动时生效。",
                       done: JITBootstrap.debuggedAtLaunch)
             }
             .padding(16).huskCard()

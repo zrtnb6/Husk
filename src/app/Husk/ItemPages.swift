@@ -108,14 +108,14 @@ struct GamePage: View {
     private var blockedBy: String? {
         guard let loaded = husk_native_loaded_apk().map({ String(cString: $0) }), let apk = app.apks.first, loaded != apk
         else { return nil }
-        return store.apps.first { $0.apks.first == loaded }?.label ?? "Another game"
+        return store.apps.first { $0.apks.first == loaded }?.label ?? "另一个游戏"
     }
 
     private var preflight: AppDiagnosis? { AppDiagnosis.preflight(app) }
 
     private var subtitle: String {
         if let used = LibraryItem.game(app).usedText { return used }
-        return runs ? "Ready to play" : "May not run on this iPhone"
+        return runs ? "可以开始玩" : "可能无法在此 iPhone 上运行"
     }
 
     var body: some View {
@@ -299,7 +299,7 @@ struct GamePage: View {
             await MainActor.run {
                 savesBusy = false
                 switch result {
-                case .success(let n): savesMessage = "Restored \(n) file\(n == 1 ? "" : "s") from \(url.lastPathComponent)."
+                case .success(let n): savesMessage = "已恢复 \(n) 个文件（\(url.lastPathComponent)）。"
                 case .failure(let e): savesMessage = e.localizedDescription
                 }
             }
@@ -315,7 +315,7 @@ struct GamePage: View {
     private var primary: some View {
         if isGeodeLauncher {
             if let gd = geometryDash {
-                BigButton(title: TLAppSettings.load(gd.id).geode ? "Geode Is On for Geometry Dash" : "Turn On Geode for Geometry Dash",
+                BigButton(title: TLAppSettings.load(gd.id).geode ? "Geometry Dash 已开启 Geode" : "为 Geometry Dash 开启 Geode",
                           systemImage: "puzzlepiece.extension.fill", prominent: !TLAppSettings.load(gd.id).geode) {
                     var s = TLAppSettings.load(gd.id)
                     s.geode = true
@@ -323,19 +323,19 @@ struct GamePage: View {
                     Task { await GeodeSupport.shared.prepare(gd) }
                 }
             } else {
-                BigButton(title: "Add Geometry Dash First", systemImage: "plus", prominent: false) { }.disabled(true)
+                BigButton(title: "请先添加 Geometry Dash", systemImage: "plus", prominent: false) { }.disabled(true)
             }
         } else if blockedBy != nil {
-            BigButton(title: "Close Husk to Play", systemImage: "xmark.circle", prominent: false) { confirmQuit = true }
+            BigButton(title: "关闭 Husk 才能游玩", systemImage: "xmark.circle", prominent: false) { confirmQuit = true }
         } else if !Launcher.jitOn {
             if jit.busy {
                 HStack(spacing: 10) { ProgressView(); Text(jit.status ?? "正在开启 JIT…").foregroundStyle(.secondary) }
                     .frame(maxWidth: .infinity).frame(height: 50)
             } else {
-                BigButton(title: "Turn On JIT to Play", systemImage: "bolt.fill", action: turnOnJIT)
+                BigButton(title: "开启 JIT 才能游玩", systemImage: "bolt.fill", action: turnOnJIT)
             }
         } else {
-            BigButton(title: runs ? "Play" : "Try to Run", systemImage: "play.fill", prominent: runs) { play() }
+            BigButton(title: runs ? "Play" : "尝试运行", systemImage: "play.fill", prominent: runs) { play() }
         }
     }
 }
@@ -361,7 +361,7 @@ struct AndroidAppPage: View {
     var body: some View {
         List {
             Section {
-                PageHero(item: item, subtitle: item.usedText ?? "Runs inside Android") { primary }
+                PageHero(item: item, subtitle: item.usedText ?? "在 Android 内运行") { primary }
             } footer: {
                 if router.pendingAndroidLaunch == app.name, !host.isReady {
                     Text("\(live.label) 会在 Android 启动完成后自动打开。")
@@ -427,12 +427,12 @@ struct AndroidAppPage: View {
             }
         } else if router.androidStarted {
             VStack(spacing: 10) {
-                BigButton(title: "Starting Android…", systemImage: "hourglass", prominent: false) { }
+                BigButton(title: "正在启动 Android…", systemImage: "hourglass", prominent: false) { }
                     .disabled(true)
                 if runner.bootProgress > 0 { ProgressView(value: Double(runner.bootProgress), total: 100) }
             }
         } else if guest.state == .ready {
-            BigButton(title: Launcher.jitOn ? "Start Android and Open" : "Turn On JIT", systemImage: Launcher.jitOn ? "play.fill" : "bolt.fill") {
+            BigButton(title: Launcher.jitOn ? "启动 Android 并打开" : "开启 JIT", systemImage: Launcher.jitOn ? "play.fill" : "bolt.fill") {
                 if Launcher.jitOn { router.pendingAndroidLaunch = app.name }
                 router.startAndroid()
             }
@@ -487,7 +487,7 @@ struct AndroidSystemPage: View {
             if host.isReady {
                 Section {
                     Button { router.openFiles(at: FilesTab.root) } label: { Label("文件", systemImage: "folder") }
-                    Button { runner.saveState(reason: "asked from the Android page") } label: {
+                    Button { runner.saveState(reason: "从 Android 页面请求") } label: {
                         Label(runner.isSavingState ? "正在保存…" : "立即保存 Android", systemImage: "externaldrive.badge.checkmark")
                     }
                     .disabled(runner.isSavingState)
@@ -519,15 +519,15 @@ struct AndroidSystemPage: View {
     private var status: String {
         if running {
             if host.isReady { return "Running" }
-            return runner.setupMessage ?? (runner.bootProgress > 0 ? "Starting · \(runner.bootProgress)%" : "Starting…")
+            return runner.setupMessage ?? (runner.bootProgress > 0 ? "启动中 · \(runner.bootProgress)%" : "开始中…")
         }
         switch guest.state {
-        case .missing: return "Not downloaded yet"
+        case .missing: return "尚未下载"
         case .downloading(_, let received, let total):
-            return "Downloading · \(bytes(received)) of \(total > 0 ? bytes(total) : "…")"
-        case .installing: return "Installing…"
-        case .failed: return "Something went wrong"
-        case .ready: return Launcher.jitOn ? "Ready to start" : "Needs JIT to start"
+            return "下载中 · \(bytes(received)) / \(total > 0 ? bytes(total) : "…")"
+        case .installing: return "正在安装…"
+        case .failed: return "出了点问题"
+        case .ready: return Launcher.jitOn ? "可以开始" : "需要 JIT 才能启动"
         }
     }
 
@@ -540,7 +540,7 @@ struct AndroidSystemPage: View {
     private var note: String? {
         guard !running else { return nil }
         switch guest.state {
-        case .missing: return "Husk's Android runtime is about 760 MB. Android itself follows once it is installed."
+        case .missing: return "Husk 的 Android 运行时约 760 MB。安装后 Android 本体将随之下载。"
         case .failed(let message): return message
         default: return nil
         }
@@ -550,30 +550,30 @@ struct AndroidSystemPage: View {
     private var primary: some View {
         if running {
             if host.isReady {
-                BigButton(title: "Open Android", systemImage: "play.fill") { open() }
+                BigButton(title: "打开 Android", systemImage: "play.fill") { open() }
             } else {
-                BigButton(title: "Watch It Start", systemImage: "eye", prominent: false) { open() }
+                BigButton(title: "观看启动过程", systemImage: "eye", prominent: false) { open() }
             }
         } else {
             switch guest.state {
             case .missing:
-                BigButton(title: "Download Android", systemImage: "arrow.down.circle") {
+                BigButton(title: "下载 Android", systemImage: "arrow.down.circle") {
                     // Claim the JIT region before the download: it takes a while, and StikDebug lets go by the end of it.
                     JITBootstrap.prewarm()
                     guest.download()
                 }
             case .downloading:
-                BigButton(title: "Cancel Download", systemImage: "xmark", prominent: false) { guest.cancel() }
+                BigButton(title: "取消下载", systemImage: "xmark", prominent: false) { guest.cancel() }
             case .installing:
                 ProgressView().frame(height: 50)
             case .failed:
-                BigButton(title: "Try Again", systemImage: "arrow.clockwise") { JITBootstrap.prewarm(); guest.download() }
+                BigButton(title: "重试", systemImage: "arrow.clockwise") { JITBootstrap.prewarm(); guest.download() }
             case .ready:
                 if jit.busy {
                     HStack(spacing: 10) { ProgressView(); Text(jit.status ?? "正在开启 JIT…").foregroundStyle(.secondary) }
                         .frame(maxWidth: .infinity).frame(height: 50)
                 } else {
-                    BigButton(title: Launcher.jitOn ? "Start Android" : "Turn On JIT", systemImage: Launcher.jitOn ? "power" : "bolt.fill") {
+                    BigButton(title: Launcher.jitOn ? "启动 Android" : "开启 JIT", systemImage: Launcher.jitOn ? "power" : "bolt.fill") {
                         router.startAndroid()
                     }
                 }

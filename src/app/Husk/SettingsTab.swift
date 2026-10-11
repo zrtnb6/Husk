@@ -120,7 +120,7 @@ struct LibrarySettings: View {
         Form {
             Section {
                 DetailRow(label: "Apps", value: "\(host.packages.count)", mono: false)
-                DetailRow(label: "With icons",
+                DetailRow(label: "带图标",
                           value: "\(host.packages.filter { $0.iconPath != nil }.count)",
                           mono: false)
             } footer: {
@@ -190,10 +190,10 @@ struct PerformanceSettings: View {
             }
 
             Section {
-                DetailRow(label: "Frame rate",
+                DetailRow(label: "帧率",
                           value: runner.fps > 0
                                  ? String(format: "%.0f fps", runner.fps) : "—")
-                DetailRow(label: "Guest screen",
+                DetailRow(label: "来宾屏幕",
                           value: "\(QemuRunner.lastGuestRes.w)×\(QemuRunner.lastGuestRes.h)")
             } header: {
                 Text("立即")
@@ -236,11 +236,11 @@ struct InputSettings: View {
     /// shapes a phone guest is actually run at, not a catalogue of every panel
     /// ever made.
     private static let presets: [(name: String, w: Int, h: Int)] = [
-        ("Small — 360 × 800", 360, 800),
+        ("小 — 360 × 800", 360, 800),
         ("HD — 720 × 1280", 720, 1280),
-        ("Full HD — 1080 × 1920", 1080, 1920),
-        ("Landscape HD — 1280 × 720", 1280, 720),
-        ("Tablet — 1280 × 800", 1280, 800),
+        ("全高清 — 1080 × 1920", 1080, 1920),
+        ("横屏高清 — 1280 × 720", 1280, 720),
+        ("平板 — 1280 × 800", 1280, 800),
     ]
 
     private static func stored(_ key: String, _ fallback: Int) -> String {
@@ -326,7 +326,7 @@ struct InputSettings: View {
                     }
 
                     if let size = effective {
-                        DetailRow(label: "Android will get",
+                        DetailRow(label: "Android 将获得",
                                   value: "\(size.w) × \(size.h)")
                     } else {
                         Text("宽高都必须在 240 到 2560 之间。")
@@ -334,7 +334,7 @@ struct InputSettings: View {
                     }
                 }
 
-                DetailRow(label: "Running now", value: running)
+                DetailRow(label: "正在运行", value: running)
             } header: {
                 Text("分辨率")
             } footer: {
@@ -362,7 +362,7 @@ struct InputSettings: View {
     /// The panel the guest actually has, which only means anything while there
     /// is a guest: the stored value is last launch's until one starts.
     private var running: String {
-        guard QemuRunner.shared.isRunning else { return "not started" }
+        guard QemuRunner.shared.isRunning else { return "未启动" }
         return "\(QemuRunner.lastGuestRes.w) × \(QemuRunner.lastGuestRes.h)"
     }
 
@@ -425,9 +425,9 @@ struct JITSettings: View {
 
     private var pairingLabel: String {
         switch jit.pairingSource {
-        case .onDevice: return "paired on this device"
-        case .imported: return "file imported"
-        case nil: return "not set up"
+        case .onDevice: return "已在本机配对"
+        case .imported: return "文件已导入"
+        case nil: return "未设置"
         }
     }
 
@@ -444,15 +444,15 @@ struct JITSettings: View {
                     ForEach(JITMethod.allCases) { Text($0.title).tag($0) }
                 }
                 DetailRow(label: "StikDebug",
-                          value: JITBootstrap.isStikDebugInstalled ? "installed" : "not found", mono: false)
+                          value: JITBootstrap.isStikDebugInstalled ? "installed" : "未找到", mono: false)
                 DetailRow(label: "TrollStore",
-                          value: JITBootstrap.isTrollStoreInstalled ? "installed" : "not found", mono: false)
-                DetailRow(label: "Installed with TrollStore",
+                          value: JITBootstrap.isTrollStoreInstalled ? "installed" : "未找到", mono: false)
+                DetailRow(label: "通过 TrollStore 安装",
                           value: JITBootstrap.isInstalledWithTrollStore ? "yes" : "no", mono: false)
                 DetailRow(label: "Jailbreak",
-                          value: JITBootstrap.debuggedAtLaunch ? "JIT allowed for apps"
-                               : JITBootstrap.isJailbroken ? "found" : "not found", mono: false)
-                DetailRow(label: "Built-in pairing", value: pairingLabel, mono: false)
+                          value: JITBootstrap.debuggedAtLaunch ? "已允许应用使用 JIT"
+                               : JITBootstrap.isJailbroken ? "found" : "未找到", mono: false)
+                DetailRow(label: "内置配对", value: pairingLabel, mono: false)
                 Button {
                     jit.showSetup = true
                 } label: {
@@ -470,30 +470,30 @@ struct JITSettings: View {
 
             Section {
                 DetailRow(label: "Debugger",
-                          value: JITBootstrap.isDebuggerAttached ? "attached" : "not attached",
+                          value: JITBootstrap.isDebuggerAttached ? "attached" : "未附加",
                           mono: false)
-                DetailRow(label: "Executable memory",
-                          value: JITBootstrap.isLive ? "granted" : "not claimed", mono: false)
+                DetailRow(label: "可执行内存",
+                          value: JITBootstrap.isLive ? "granted" : "未申请", mono: false)
                 // The two routes, named separately. Either one is enough, and
                 // when someone reports "JIT does not work" these two rows are
                 // the whole diagnosis.
-                DetailRow(label: "Trap servicer",
-                          value: husk_ios_jit_self_route() != nil ? "not needed"
-                               : JITBootstrap.prewarmed ? "answering" : "not answering",
+                DetailRow(label: "陷阱服务",
+                          value: husk_ios_jit_self_route() != nil ? "不需要"
+                               : JITBootstrap.prewarmed ? "answering" : "未响应",
                           mono: false)
                 if let route = husk_ios_jit_self_route() {
-                    DetailRow(label: "Made by Husk",
-                              value: String(cString: route) == "MAP_JIT" ? "MAP_JIT (TrollStore entitlement)" : "plain memory (debugged or jailbroken)",
+                    DetailRow(label: "由 Husk 生成",
+                              value: String(cString: route) == "MAP_JIT" ? "MAP_JIT（TrollStore 授权）" : "普通内存（已调试或越狱）",
                               mono: false)
                 }
                 // Cached answer only: running the probe from a view body
                 // could freeze the app (see JITBootstrap.mapJITWorks).
                 DetailRow(label: "MAP_JIT",
-                          value: JITBootstrap.deviceEnforcesTXM ? "not used (TXM)"
+                          value: JITBootstrap.deviceEnforcesTXM ? "未使用（TXM）"
                                : JITBootstrap.mapJITResult.map { $0 ? "executes" : "refused" }
-                                 ?? "not tested",
+                                 ?? "未测试",
                           mono: false)
-                DetailRow(label: "Debugger after setup",
+                DetailRow(label: "设置后的调试器",
                           value: JITBootstrap.detached ? "detached" : "attached",
                           mono: false)
                 if let why = JITBootstrap.lastFailure {
@@ -588,7 +588,7 @@ struct SavedMachineSettings: View {
                         HuskLog.log("ui", v ? "automatic saving on" : "automatic saving off")
                     }
                 Button {
-                    QemuRunner.shared.saveState(reason: "asked from settings")
+                    QemuRunner.shared.saveState(reason: "从设置请求")
                 } label: {
                     Label(runner.isSavingState ? "正在保存…" : "立即保存",
                           systemImage: "externaldrive.badge.checkmark")
@@ -649,9 +649,9 @@ struct SavedMachineSettings: View {
 
     private func forget(_ mode: String, _ name: String) {
         if QemuRunner.shared.forgetSnapshot(mode: mode) {
-            deleteResult = "Deleted the \(name) machine. The next launch boots from cold."
+            deleteResult = "已删除 \(name) 虚拟机。下次启动将冷启动。"
         } else {
-            deleteResult = "No \(name) machine is saved, so nothing was deleted."
+            deleteResult = "没有保存 \(name) 虚拟机，因此未删除任何内容。"
         }
     }
 }
@@ -699,7 +699,7 @@ struct AppearanceSettings: View {
                 }
                 .padding(.vertical, 6)
 
-                ColorPicker("Custom Colour", selection: $custom, supportsOpacity: false)
+                ColorPicker("自定义颜色", selection: $custom, supportsOpacity: false)
                     .onChange(of: custom) { theme.accentColor = $0 }
             } header: {
                 Text("强调色")

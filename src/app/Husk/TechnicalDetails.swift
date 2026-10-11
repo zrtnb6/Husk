@@ -12,8 +12,8 @@ extension TLReport {
     /// What runs it, in words.
     var runnerName: String {
         if runsOnNativeRuntime { return nativeEngineName }
-        if let web = webKind { return "\(web.name) (web app)" }
-        return canRun ? "Java (Husk's interpreter)" : "None"
+        if let web = webKind { return "\(web.name)（网页应用）" }
+        return canRun ? "Java（Husk 的解释器）" : "None"
     }
 }
 
@@ -132,7 +132,7 @@ struct TLTechnicalView: View {
                 return (text, total)
             }.value
             log = text
-            dataSize = total == 0 ? "Nothing yet" : bytes(total)
+            dataSize = total == 0 ? "暂无" : bytes(total)
         }
         .sheet(isPresented: $sharing) { ShareSheet(items: [logURL]) }
     }
@@ -151,12 +151,12 @@ struct TLTechnicalView: View {
     private func libraryDetail(_ lib: TLLibrary) -> String {
         var parts: [String] = []
         if let r = lib.relocations { parts.append("\(r) relocations") }
-        if let t = lib.tpidrReads, t > 0 { parts.append("\(t) thread-register reads") }
-        if let s = lib.svc, s > 0 { parts.append("\(s) system calls") }
-        if let c = lib.conflictPages, c > 0 { parts.append("\(c) shared code/data pages") }
-        if lib.tls == true { parts.append("thread-local storage") }
+        if let t = lib.tpidrReads, t > 0 { parts.append("\(t) 次线程寄存器读取") }
+        if let s = lib.svc, s > 0 { parts.append("\(s) 次系统调用") }
+        if let c = lib.conflictPages, c > 0 { parts.append("\(c) 个共享代码/数据页") }
+        if lib.tls == true { parts.append("线程本地存储") }
         if !lib.notes.isEmpty { parts.append(contentsOf: lib.notes) }
-        return parts.isEmpty ? (lib.status == "ok" ? "Loads as it is" : lib.status) : parts.joined(separator: " · ")
+        return parts.isEmpty ? (lib.status == "ok" ? "按原样加载" : lib.status) : parts.joined(separator: " · ")
     }
 
     private func size(of path: String) -> String {

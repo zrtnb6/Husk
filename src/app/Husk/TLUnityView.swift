@@ -195,7 +195,7 @@ final class TLUnityUIView: UIView, UIKeyInput {
         var p = husk_unity_perf()
         husk_unity_perf_snapshot(&p)
         let text = p.fps > 0
-            ? String(format: "%.0f fps · %.1f ms · max %.0f", p.fps, p.mean_ms, p.max_ms)
+            ? String(format: "%.0f fps · %.1f ms · 峰值 %.0f", p.fps, p.mean_ms, p.max_ms)
             : "starting"
         stats.text = text
         onStats?(text)
@@ -635,19 +635,19 @@ final class TLUnityModel: ObservableObject {
 
     var statusText: String {
         switch state {
-        case Int32(HUSK_UNITY_STARTING): return "Loading the engine…"
+        case Int32(HUSK_UNITY_STARTING): return "正在加载引擎…"
         case Int32(HUSK_UNITY_RUNNING):  return "Running"
-        case Int32(HUSK_UNITY_FAILED):   return "Could not start — see the log"
-        case Int32(HUSK_UNITY_ENDED):    return "The game exited"
+        case Int32(HUSK_UNITY_FAILED):   return "无法启动——见日志"
+        case Int32(HUSK_UNITY_ENDED):    return "游戏已退出"
         default:                         return "Starting"
         }
     }
 
     var subStatusText: String {
         switch state {
-        case Int32(HUSK_UNITY_RUNNING): return "\(frames) frame(s) drawn · native runtime"
-        case Int32(HUSK_UNITY_STARTING): return "Loading libraries and starting the engine"
-        default: return "Native runtime"
+        case Int32(HUSK_UNITY_RUNNING): return "已绘制 \(frames) 帧 · 原生运行时"
+        case Int32(HUSK_UNITY_STARTING): return "正在加载库并启动引擎"
+        default: return "原生运行时"
         }
     }
 

@@ -308,8 +308,8 @@ private struct WindowDock: View {
                 Button { windows.restore() } label: { Label("显示", systemImage: "macwindow") }
                 Button(role: .destructive) { windows.close() } label: { Label("关闭", systemImage: "xmark") }
             }
-            .accessibilityLabel("\(app.label), minimised")
-            .accessibilityHint("Shows the window again")
+            .accessibilityLabel("\(app.label)，已最小化")
+            .accessibilityHint("再次显示窗口")
     }
 }
 

@@ -57,13 +57,13 @@ struct AppDiagnosis: Identifiable, Equatable {
         if r.verdict == "noArm64" {
             return AppDiagnosis(kind: .unsupportedCPU, title: "不支持：CPU 指令集类型不符",
                                 detail: r.summary + " iPhone 只能运行 64 位 ARM（arm64）代码。请寻找此应用的 arm64 或通用版本。",
-                                evidence: "ABIs: " + r.abis.joined(separator: ", "))
+                                evidence: "ABI：" + r.abis.joined(separator: ", "))
         }
         if app.apks.count == 1, let base = app.apks.first, husk_apk_split_required(base) != 0 {
             return AppDiagnosis(kind: .missingSplits, title: "应用不完整",
                                 detail: "此应用分为多个部分发布（拆分 APK），而只导入了基础包，因此缺少库或"
                                     + "资源。请导入完整捆绑包（.apks、.xapk 或 .apkm），或从 Husk 的商店获取。",
-                                evidence: "manifest: split APKs required")
+                                evidence: "清单：需要拆分 APK")
         }
         if let lib = r.libraries.first(where: { l in protectorLibraries.contains(where: { l.name.hasPrefix($0) }) }) {
             return AppDiagnosis(kind: .protected, title: "受保护的应用",
@@ -87,7 +87,7 @@ struct AppDiagnosis: Identifiable, Equatable {
                 guard l.contains("pc ") else { return nil }
                 return l.split(separator: " ").map(String.init).first { $0.hasSuffix(".so") || $0.contains(".so") }
             }.first
-            let signal = head.range(of: "signal \\d+", options: .regularExpression).map { String(head[$0]) } ?? "a fatal signal"
+            let signal = head.range(of: "signal \\d+", options: .regularExpression).map { String(head[$0]) } ?? "一个致命信号"
             if let lib, !lib.hasPrefix("libhusk"), !lib.contains("Husk") {
                 return AppDiagnosis(kind: .nativeCrash, title: "在 \(lib) 中崩溃",
                                     detail: "应用自身的原生代码（\(lib)）以 \(signal) 终止。它很可能需要 Husk "
@@ -101,7 +101,7 @@ struct AppDiagnosis: Identifiable, Equatable {
         // The app ended itself from native code: protection that found it is not on a certified phone, most of the time
         if let l = lines.last(where: { $0.contains("bionic: exit(") && $0.contains("called from") }),
            let code = l.range(of: "exit\\((\\d+)\\)", options: .regularExpression).map({ String(l[$0]) }), code != "exit(0)" {
-            let lib = l.components(separatedBy: "called from ").last?.split(separator: " ").first.map(String.init) ?? "its code"
+            let lib = l.components(separatedBy: "called from ").last?.split(separator: " ").first.map(String.init) ?? "其代码"
             return AppDiagnosis(kind: .closedItself, title: "应用拒绝在此运行",
                                 detail: "\(lib) 主动关闭了应用（\(code)）。带防篡改或反作弊保护的应用在"
                                     + "发现不在认证的 Android 手机上时会这样做，而 Husk 无法为它们伪装成那样。",
@@ -261,18 +261,18 @@ extension AppDiagnosis {
     @MainActor static func writeReport(app: TLApp, diagnosis d: AppDiagnosis) -> URL? {
         let info = Bundle.main.infoDictionary ?? [:]
         var text = """
-        Husk app report
+        Husk 应用报告
         ===============
-        App      : \(app.label) (\(app.packageName ?? "?"))
-        What     : \(d.title)
-        Why      : \(d.detail)
-        Evidence : \(d.evidence ?? "-")
+        应用     : \(app.label) (\(app.packageName ?? "?"))
+        问题     : \(d.title)
+        原因     : \(d.detail)
+        证据     : \(d.evidence ?? "-")
         Husk     : \(info["CFBundleShortVersionString"] as? String ?? "?") (\(info["CFBundleVersion"] as? String ?? "?"))
-        Device   : \(HuskLog.deviceModel), \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)
+        设备     : \(HuskLog.deviceModel), \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)
         APKs     : \(app.apks.map { ($0 as NSString).lastPathComponent }.joined(separator: ", "))
-        Engine   : \(app.report?.runnerName ?? "?")
+        引擎     : \(app.report?.runnerName ?? "?")
 
-        ---- log of the run ----
+        ---- 本次运行的日志 ----
 
         """
         if let c = husk_tl_attempt_log() { text += String(cString: c); free(c) }

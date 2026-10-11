@@ -12,7 +12,7 @@ enum BundleUnpacker {
         case notAZip, unsupported(String)
         var errorDescription: String? {
             switch self {
-            case .notAZip: return "That file is not a bundle Husk can read."
+            case .notAZip: return "该文件不是 Husk 能读取的安装包。"
             case .unsupported(let why): return why
             }
         }
@@ -63,7 +63,7 @@ enum BundleUnpacker {
         guard e >= 0 else { throw Failure.notAZip }
         let count = Int(le16(bytes, e + 10))
         let dirSize = UInt64(le32(bytes, e + 12)), dirOffset = UInt64(le32(bytes, e + 16))
-        if dirOffset == 0xffff_ffff || count == 0xffff { throw Failure.unsupported("That bundle uses a zip format (Zip64) Husk does not read yet.") }
+        if dirOffset == 0xffff_ffff || count == 0xffff { throw Failure.unsupported("该安装包使用了 Husk 尚不支持的 zip 格式（Zip64）。") }
 
         try file.seek(toOffset: dirOffset)
         guard let directory = try file.read(upToCount: Int(dirSize)), directory.count == Int(dirSize) else { throw Failure.notAZip }
@@ -83,7 +83,7 @@ enum BundleUnpacker {
 
             let base = (name as NSString).lastPathComponent
             guard base.lowercased().hasSuffix(".apk"), !name.hasSuffix("/") else { continue }
-            guard method == 0 else { throw Failure.unsupported("\(base) is compressed inside its bundle, which Husk cannot unpack yet.") }
+            guard method == 0 else { throw Failure.unsupported("\(base) 在其安装包内是压缩的，Husk 目前无法解包。") }
 
             // The local header has its own name and extra lengths; the data follows them.
             try file.seek(toOffset: localOffset)
@@ -105,7 +105,7 @@ enum BundleUnpacker {
             }
             names.append(base)
         }
-        if names.isEmpty { throw Failure.unsupported("There are no APKs in that bundle.") }
+        if names.isEmpty { throw Failure.unsupported("该安装包里没有 APK。") }
         return names
     }
 

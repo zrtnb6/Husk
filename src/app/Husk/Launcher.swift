@@ -86,8 +86,8 @@ enum LibraryItem: Identifiable, Hashable {
         guard let date = lastUsed else { return nil }
         let rel = RelativeDateTimeFormatter()
         rel.unitsStyle = .full
-        let ago = date.timeIntervalSinceNow > -60 ? "just now" : rel.localizedString(for: date, relativeTo: Date())
-        return (isGame ? "Played " : "Opened ") + ago
+        let ago = date.timeIntervalSinceNow > -60 ? "刚刚" : rel.localizedString(for: date, relativeTo: Date())
+        return (isGame ? "玩了 " : "打开于 ") + ago
     }
 }
 
@@ -155,7 +155,7 @@ struct HomeView: View {
                             .font(.system(size: 28, weight: .heavy, design: .rounded))
                         Spacer()
                         HeaderButton(systemImage: "plus") { router.addSomething() }
-                            .accessibilityLabel("Add a Game or App")
+                            .accessibilityLabel("添加游戏或应用")
                     }
                     .padding(.horizontal, 4)
                     .padding(.bottom, 6)
@@ -257,7 +257,7 @@ private struct LeadTile: View {
                                 .font(.headline)
                                 .foregroundStyle(.primary)
                                 .lineLimit(1)
-                            Text(item.usedText ?? (item.isGame ? "Ready to play" : "Ready to open"))
+                            Text(item.usedText ?? (item.isGame ? "可以开始玩" : "可以打开"))
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
@@ -275,7 +275,7 @@ private struct LeadTile: View {
                         .background(Color.accentColor, in: Circle())
                 }
                 .buttonStyle(CardButtonStyle())
-                .accessibilityLabel((item.isGame ? "Play " : "Open ") + item.title)
+                .accessibilityLabel((item.isGame ? "玩了 " : "打开 ") + item.title)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
@@ -342,12 +342,12 @@ private struct DownloadsTile: View {
             let total = running.reduce(Int64(0)) { $0 + $1.total }
             let got = running.reduce(Int64(0)) { $0 + $1.received }
             let pct = total > 0 ? " · \(Int(Double(got) / Double(total) * 100))%" : ""
-            return "\(running.count) downloading\(pct)"
+            return "\(running.count) 项下载中\(pct)"
         }
-        if downloads.jobs.contains(where: \.failed) { return "Something failed" }
-        if let release = updates.available { return "Husk \(release.version) is out" }
-        if guest.update.isSomething { return "Android update ready" }
-        return "Up to date"
+        if downloads.jobs.contains(where: \.failed) { return "出错了" }
+        if let release = updates.available { return "Husk \(release.version) 已发布" }
+        if guest.update.isSomething { return "Android 更新就绪" }
+        return "已是最新"
     }
 
     var body: some View {
@@ -570,11 +570,11 @@ struct LibraryScreen: View {
                             .font(.system(size: 28, weight: .heavy, design: .rounded))
                         Spacer()
                         HeaderButton(systemImage: "plus") { router.addSomething() }
-                            .accessibilityLabel("Add a Game or App")
+                            .accessibilityLabel("添加游戏或应用")
                     }
                     .padding(.horizontal, 4)
                     .padding(.bottom, 6)
-                    SearchField(text: $query, prompt: "Search games and apps")
+                    SearchField(text: $query, prompt: "搜索游戏和应用")
                     Picker("显示", selection: $router.libraryFilter) {
                         ForEach(LibraryFilter.allCases) { Text($0.title).tag($0) }
                     }
@@ -590,7 +590,7 @@ struct LibraryScreen: View {
                     let apps = (matches(query, "Android") ? [LibraryItem.android] : []) + items.filter { !$0.isGame }
 
                     if router.libraryFilter != .apps {
-                        section("Games", games, empty: query.isEmpty ? "Add a game with the + button." : nil)
+                        section("Games", games, empty: query.isEmpty ? "点击 + 按钮添加游戏。" : nil)
                     }
                     if router.libraryFilter != .games {
                         section("Apps", apps, empty: nil)
@@ -641,10 +641,10 @@ struct LibraryScreen: View {
         switch item {
         case .game(let g):
             if g.packageName == GeodeSupport.launcherPackage { return "Geode" }
-            return g.report?.canRun == true ? nil : "May not run"
+            return g.report?.canRun == true ? nil : "可能无法运行"
         case .android:
             if AndroidHost.shared.isReady { return "Running" }
-            return guest.state == .ready ? nil : "Not installed"
+            return guest.state == .ready ? nil : "未安装"
         case .app: return nil
         }
     }

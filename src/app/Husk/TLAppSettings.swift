@@ -33,10 +33,10 @@ struct TLAppSettings: Codable, Equatable {
         }
         var detail: String {
             switch self {
-            case .low: return "1 pixel per point. Fastest."
-            case .medium: return "1.5 pixels per point."
-            case .high: return "2 pixels per point. The default."
-            case .native: return "Every pixel the screen has. Sharpest, and heaviest."
+            case .low: return "每点 1 像素。最快。"
+            case .medium: return "每点 1.5 像素。"
+            case .high: return "每点 2 像素。默认。"
+            case .native: return "屏幕的每一个像素。最清晰，也最耗性能。"
             }
         }
         @MainActor var scale: CGFloat {
@@ -260,7 +260,7 @@ struct TLAppSettingsView: View {
             }
 
             Section {
-                DetailRow(label: "Saved by the game", value: dataSize, mono: false)
+                DetailRow(label: "由游戏保存", value: dataSize, mono: false)
                 Button(role: .destructive) { confirmReset = true } label: {
                     Label("重置游戏数据", systemImage: "arrow.counterclockwise")
                 }

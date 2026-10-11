@@ -16,7 +16,7 @@
 	<array>
 		<dict>
 			<key>CFBundleTypeName</key>
-			<string>Android App</string>
+			<string>安卓应用</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSHandlerRank</key>
@@ -75,7 +75,7 @@
 		<string>_remotepairing-pairable-host._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Husk uses the local network to pair with this iPhone for JIT, without a computer.</string>
+	<string>Husk 使用本地网络与此 iPhone 配对以启用 JIT，无需电脑。</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
 	<key>NSSupportsLiveActivitiesFrequentUpdates</key>
@@ -120,7 +120,7 @@
 				<string>public.archive</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Android App</string>
+			<string>安卓应用</string>
 			<key>UTTypeIdentifier</key>
 			<string>com.android.package-archive</string>
 			<key>UTTypeTagSpecification</key>
@@ -142,7 +142,7 @@
 				<string>public.archive</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Android App Bundle (XAPK)</string>
+			<string>安卓应用包（XAPK）</string>
 			<key>UTTypeIdentifier</key>
 			<string>app.husk.xapk</string>
 			<key>UTTypeTagSpecification</key>
@@ -160,7 +160,7 @@
 				<string>public.archive</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Android App Bundle (APKM)</string>
+			<string>安卓应用包（APKM）</string>
 			<key>UTTypeIdentifier</key>
 			<string>app.husk.apkm</string>
 			<key>UTTypeTagSpecification</key>
@@ -178,7 +178,7 @@
 				<string>public.archive</string>
 			</array>
 			<key>UTTypeDescription</key>
-			<string>Android App Bundle (APKS)</string>
+			<string>安卓应用包（APKS）</string>
 			<key>UTTypeIdentifier</key>
 			<string>app.husk.apks</string>
 			<key>UTTypeTagSpecification</key>

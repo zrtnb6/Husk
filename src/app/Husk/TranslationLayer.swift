@@ -94,15 +94,15 @@ extension TLReport {
         let flagged = libraries.filter { $0.abi == "arm64-v8a" && $0.status != "ok" }.count
         let total = libraries.filter { $0.abi == "arm64-v8a" }.count
         var text = nativeEngine == .flutter
-            ? "A Flutter app. Its engine and its compiled Dart run natively through Husk's translation layer, which loads its \(total) arm64 libraries itself."
+            ? "一个 Flutter 应用。其引擎和编译后的 Dart 通过 Husk 的转译层原生运行，该层自行加载其 \(total) 个 arm64 库。"
             : nativeEngine == .java && engine != "libGDX"
-            ? "An Android app. Husk runs its code on its own Java runtime" + (total > 0 ? " and loads its \(total) arm64 libraries itself." : ".")
-            : "A \(nativeEngineName) game. It runs through Husk's native runtime, which loads its \(total) arm64 libraries itself."
-        if nativeEngine == .cocos || nativeEngine == .minecraft || nativeEngine == .ue4 || nativeEngine == .gta { text += " It is a landscape game: Husk turns the screen for it." }
-        else if nativeEngine == .sdl || nativeEngine == .nativeactivity || nativeEngine == .godot || nativeEngine == .gamemaker { text += " Husk turns the screen the way the game asks for." }
+            ? "一个 Android 应用。Husk 在自带的 Java 运行时上运行其代码" + (total > 0 ? "，并自行加载其 \(total) 个 arm64 库。" : ".")
+            : "一个 \(nativeEngineName) 游戏。它通过 Husk 的原生运行时运行，该运行时自行加载其 \(total) 个 arm64 库。"
+        if nativeEngine == .cocos || nativeEngine == .minecraft || nativeEngine == .ue4 || nativeEngine == .gta { text += " 它是横屏游戏：Husk 会为它旋转屏幕。" }
+        else if nativeEngine == .sdl || nativeEngine == .nativeactivity || nativeEngine == .godot || nativeEngine == .gamemaker { text += " Husk 会按游戏的要求旋转屏幕。" }
         if flagged > 0 {
-            text += " \(flagged) of them use tricks the older loader could not handle; the native runtime handles those too, "
-                  + "except for optional anti-tamper code, which it leaves out."
+            text += " 其中 \(flagged) 个使用了旧加载器无法处理的技巧；原生运行时也能处理这些，"
+                  + "除了可选的反篡改代码，它会将其略过。"
         }
         return text
     }
@@ -265,8 +265,8 @@ final class TranslationLayerStore: ObservableObject {
     /// picked together -- and report on it.
     func add(_ urls: [URL], move: Bool = false) {
         guard !urls.isEmpty, busy == nil else { return }
-        busy = urls.count == 1 ? "Adding \(urls[0].lastPathComponent)…"
-                               : "Adding \(urls.count) APKs…"
+        busy = urls.count == 1 ? "正在添加 \(urls[0].lastPathComponent)…"
+                               : "正在添加 \(urls.count) 个 APK…"
         Task.detached(priority: .userInitiated) {
             let failure = Self.ingest(urls, move: move)
             await MainActor.run {
@@ -386,7 +386,7 @@ final class TranslationLayerStore: ObservableObject {
         } catch {
             try? fm.removeItem(at: dir)
             HuskLog.log("tl", "FAILED to add: \(error.localizedDescription)")
-            return "Husk could not copy it: \(error.localizedDescription)"
+            return "Husk 无法复制它：\(error.localizedDescription)"
         }
 
         let apks = ((try? fm.contentsOfDirectory(atPath: dir.path)) ?? [])
@@ -439,7 +439,7 @@ final class TranslationLayerStore: ObservableObject {
                 if iconEntry.hasSuffix(".xml") {
                     if let image = adaptiveIcon(apk, xml: iconEntry, resources: arsc), let png = image.pngData() {
                         try? png.write(to: dir.appendingPathComponent("icon.png"))
-                        drawn = "\(iconEntry) (adaptive, composed)"
+                        drawn = "\(iconEntry)（自适应，已合成）"
                     }
                 } else if let data = entry(apk, iconEntry, limit: 16 << 20), let png = UIImage(data: data)?.pngData() {
                     try? png.write(to: dir.appendingPathComponent("icon.png"))
@@ -572,11 +572,11 @@ struct TLChecksView: View {
 
     private var progressSection: some View {
         Section {
-            DetailRow(label: "App reports", value: "working", mono: false)
-            DetailRow(label: "Device checks", value: "working", mono: false)
-            DetailRow(label: "Library loader", value: "working", mono: false)
+            DetailRow(label: "应用报告", value: "working", mono: false)
+            DetailRow(label: "设备检查", value: "working", mono: false)
+            DetailRow(label: "库加载器", value: "working", mono: false)
             DetailRow(label: "Android runtime", value: "Unity, cocos2d-x, GameActivity, SDL3", mono: false)
-            DetailRow(label: "Opening apps", value: "Unity, cocos2d-x, Minecraft and SDL3 games", mono: false)
+            DetailRow(label: "打开应用", value: "Unity、cocos2d-x、Minecraft 和 SDL3 游戏", mono: false)
         } header: {
             Text("当前进度")
         } footer: {
@@ -618,12 +618,12 @@ final class TLAttemptRunner: ObservableObject {
     private var timer: Timer?
 
     var statusText: String {
-        if isRunning { return "Running Attempt..." }
+        if isRunning { return "正在运行尝试…" }
         guard let code = exitCode else { return "Ready" }
         switch code {
-        case 2:  return "Success: The guest drew frames!"
-        case 1:  return "Loaded: Native libraries loaded (no draw)"
-        default: return "Refused: Could not execute"
+        case 2:  return "成功：来宾绘出了画面！"
+        case 1:  return "已加载：原生库已加载（未绘制）"
+        default: return "被拒绝：无法执行"
         }
     }
 
@@ -639,12 +639,12 @@ final class TLAttemptRunner: ObservableObject {
 
     var subStatusText: String {
         if isRunning {
-            return "\(frameCount) frame(s) posted · driving lifecycle"
+            return "已提交 \(frameCount) 帧 · 驱动生命周期"
         }
         if let code = exitCode {
-            return "Exit code \(code) · \(frameCount) frame(s) drawn"
+            return "退出码 \(code) · 已绘制 \(frameCount) 帧"
         }
-        return "Not started"
+        return "未启动"
     }
 
     private var pollTicks: Int = 0

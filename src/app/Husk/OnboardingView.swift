@@ -128,24 +128,24 @@ struct OnboardingView: View {
                     .font(.title2.weight(.semibold))
                     .padding(.top, 34).padding(.bottom, 6)
 
-                choice(icon: "bolt.fill", title: "Start Android on launch",
-                       detail: "Boots the guest as soon as Husk opens, once JIT is "
-                             + "available. Off means you start it yourself.",
+                choice(icon: "bolt.fill", title: "启动时开始运行 Android",
+                       detail: "Husk 一打开就启动来宾系统（前提是 JIT "
+                             + "可用）。关闭则需你手动启动。",
                        isOn: $autoStart)
 
-                choice(icon: "rectangle.landscape.rotate", title: "Landscape screen",
-                       detail: "Gives Android a landscape screen, which games fill "
-                             + "properly. Portrait apps get letterboxed instead.",
+                choice(icon: "rectangle.landscape.rotate", title: "横屏",
+                       detail: "为 Android 提供横屏，游戏可以铺满 "
+                             + "屏幕。竖屏应用则会加黑边。",
                        isOn: $landscape)
 
                 choice(icon: "speaker.wave.2.fill", title: "Sound",
-                       detail: "Adds a sound device. Android cannot be saved while "
-                             + "this is on, so every launch boots from cold.",
+                       detail: "添加声音设备。开启时无法保存 "
+                             + "Android，因此每次启动都会冷启动。",
                        isOn: $sound)
 
-                choice(icon: "externaldrive.badge.checkmark", title: "Save automatically",
-                       detail: "Saves the machine once Android settles, so later "
-                             + "launches restore in seconds instead of booting.",
+                choice(icon: "externaldrive.badge.checkmark", title: "自动保存",
+                       detail: "待 Android 稳定后保存整机，之后启动 "
+                             + "可在数秒内恢复，而无需重新启动。",
                        isOn: $autoSave)
             }
             .padding(.horizontal, 20).padding(.bottom, 20)
@@ -175,12 +175,12 @@ struct OnboardingView: View {
 
     /// What the JIT page says is already in place, if anything.
     private var jitState: String? {
-        if JITBootstrap.ready { return "JIT is on." }
-        if jit.method == .stikDebug { return "Husk will use StikDebug." }
-        if jit.method == .trollStore { return "Husk will use TrollStore." }
+        if JITBootstrap.ready { return "JIT 已开启。" }
+        if jit.method == .stikDebug { return "Husk 将使用 StikDebug。" }
+        if jit.method == .trollStore { return "Husk 将使用 TrollStore。" }
         switch jit.pairingSource {
-        case .onDevice: return "Paired on this device."
-        case .imported: return "Pairing file imported."
+        case .onDevice: return "已在本机配对。"
+        case .imported: return "配对文件已导入。"
         case nil: return nil
         }
     }

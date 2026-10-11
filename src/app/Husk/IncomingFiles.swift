@@ -59,7 +59,7 @@ final class IncomingFiles: ObservableObject {
 
     /// Copy files to Husk's own folder, off the main thread -- a game can be gigabytes -- then hand back the copies.
     private func take(_ urls: [URL], then: @escaping @MainActor ([URL]) -> Void) {
-        preparing = urls.count == 1 ? "Preparing \(urls[0].lastPathComponent)…" : "Preparing \(urls.count) files…"
+        preparing = urls.count == 1 ? "正在准备 \(urls[0].lastPathComponent)…" : "正在准备 \(urls.count) 个文件…"
         Task.detached(priority: .userInitiated) {
             var copies: [URL] = []
             for url in urls {
@@ -124,7 +124,7 @@ struct IncomingChooser: View {
 
     private var title: String {
         guard let first = incoming.waiting.first else { return "" }
-        return incoming.waiting.count == 1 ? first.lastPathComponent : "\(incoming.waiting.count) files"
+        return incoming.waiting.count == 1 ? first.lastPathComponent : "\(incoming.waiting.count) 个文件"
     }
 
     var body: some View {
@@ -135,7 +135,7 @@ struct IncomingChooser: View {
             }
 
             choice(icon: "bolt.fill", title: "Translation Layer",
-                   detail: "Runs the game directly on your iPhone, without starting Android. Best for games.") {
+                   detail: "直接在 iPhone 上运行游戏，无需启动 Android。最适合游戏。") {
                 incoming.sendToTranslationLayer()
             }
             choice(icon: "apps.iphone", title: "Android",
@@ -151,9 +151,9 @@ struct IncomingChooser: View {
     }
 
     private var androidDetail: String {
-        if host.isReady { return "Installs it into Android, where any app can run." }
-        if guest.state == .ready { return "Installs it into Android the next time Android starts." }
-        return "Installs it into Android once Android is downloaded and started."
+        if host.isReady { return "将其安装到 Android，任何应用都能在其中运行。" }
+        if guest.state == .ready { return "下次 Android 启动时将其安装进去。" }
+        return "待 Android 下载并启动后将其安装进去。"
     }
 
     private func choice(icon: String, title: String, detail: String, action: @escaping () -> Void) -> some View {

@@ -87,13 +87,13 @@ private struct DownloadRow: View {
     private var fraction: Double { job.total > 0 ? min(1, Double(job.received) / Double(job.total)) : 0 }
 
     private var status: String {
-        if job.complete { return job.kind == .apk ? "Added to the library" : job.kind == .folder ? "In Shared Storage" : "In Shared Storage" }
-        if job.paused { return "Paused · \(Downloads.bytes(job.received)) of \(Downloads.bytes(job.total))" }
-        if let err = job.files.first(where: { $0.error != nil })?.error { return "Stopped: \(err)" }
-        var s = "\(Downloads.bytes(job.received)) of \(Downloads.bytes(job.total))"
-        if job.files.count > 1 { s += " · \(job.filesDone)/\(job.files.count) files" }
+        if job.complete { return job.kind == .apk ? "已添加到库" : job.kind == .folder ? "在共享存储中" : "在共享存储中" }
+        if job.paused { return "已暂停 · \(Downloads.bytes(job.received)) / \(Downloads.bytes(job.total))" }
+        if let err = job.files.first(where: { $0.error != nil })?.error { return "已停止：\(err)" }
+        var s = "\(Downloads.bytes(job.received)) / \(Downloads.bytes(job.total))"
+        if job.files.count > 1 { s += " · \(job.filesDone)/\(job.files.count) 个文件" }
         if speed > 1 {
-            s += " · \(Downloads.bytes(Int64(speed)))/s"
+            s += " · \(Downloads.bytes(Int64(speed)))/秒"
             let left = Double(job.total - job.received) / speed
             if left.isFinite, left > 0 {
                 let f = DateComponentsFormatter(); f.allowedUnits = left > 3600 ? [.hour, .minute] : [.minute, .second]; f.unitsStyle = .abbreviated
@@ -136,7 +136,7 @@ private struct AddDownloadSheet: View {
         NavigationStack {
             Form {
                 Section {
-                    TextField("https://… or http://192.168.1.20:8642/", text: $link)
+                    TextField("https://… 或 http://192.168.1.20:8642/", text: $link)
                         .keyboardType(.URL)
                         .textInputAutocapitalization(.never)
                         .autocorrectionDisabled()

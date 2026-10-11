@@ -29,18 +29,18 @@ struct BootScreen: View {
     /// looking at the screen, and the jokes should not repeat before the
     /// information does.
     private static let phrases = [
-        "Prepare for awesomeness",
-        "Waking Android up",
-        "Teaching an iPhone to speak Android",
-        "This is a whole operating system — be patient",
-        "App by Levi",
-        "Star the repo if you like this sort of thing",
-        "Translating arm64, one block at a time",
-        "No, it has not frozen",
-        "Unpacking the guest",
-        "Almost worth the wait",
-        "Negotiating with the JIT",
-        "Nearly there",
+        "准备就绪，敬请期待",
+        "正在唤醒 Android",
+        "教 iPhone 说安卓语",
+        "这整个操作系统——请耐心等待",
+        "由 Levi 开发",
+        "喜欢就给仓库点个 Star",
+        "逐块翻译 arm64",
+        "不，它没有卡死",
+        "正在解包来宾系统",
+        "等待是值得的",
+        "正在与 JIT 协商",
+        "就快好了",
     ]
 
     var body: some View {
@@ -164,8 +164,8 @@ struct BootScreen: View {
         // for ten minutes, so show elapsed time instead.
         if done >= 58, !QemuRunner.didRestore {
             let mins = Int(now.timeIntervalSince(QemuRunner.bootStarted) / 60)
-            return mins < 1 ? "first boot takes 5–15 min"
-                            : "\(mins) min · first boot takes 5–15 min"
+            return mins < 1 ? "首次启动需 5–15 分钟"
+                            : "\(mins) 分钟 · 首次启动需 5–15 分钟"
         }
         guard done >= 8, done <= 92 else { return nil }
         let elapsed = now.timeIntervalSince(began)
@@ -175,8 +175,8 @@ struct BootScreen: View {
         guard left > 2, left < 15 * 60 else { return nil }
         if left < 90 {
             let rounded = Int((left / 5).rounded()) * 5
-            return "about \(max(rounded, 5)) seconds remaining"
+            return "约剩 \(max(rounded, 5)) 秒"
         }
-        return "about \(Int((left / 60).rounded())) minutes remaining"
+        return "约剩 \(Int((left / 60).rounded())) 分钟"
     }
 }

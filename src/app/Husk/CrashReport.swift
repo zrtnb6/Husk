@@ -30,23 +30,23 @@ final class CrashReport: ObservableObject {
 
         var title: String {
             switch self {
-            case .signal: return "The game crashed"
-            case .startFailed: return "The game could not start"
-            case .unknown: return "Husk closed while the game was running"
+            case .signal: return "游戏崩溃了"
+            case .startFailed: return "游戏无法启动"
+            case .unknown: return "游戏运行期间 Husk 被关闭"
             case .diagnosed(let d): return d.title
             }
         }
         var detail: String {
             switch self {
             case .signal(let s):
-                let name = [11: "SIGSEGV, a bad memory access", 6: "SIGABRT, the game or a library gave up",
-                            4: "SIGILL, an instruction this device does not run", 8: "SIGFPE, an arithmetic error",
-                            12: "SIGSYS, a system call iOS does not allow"][s] ?? "signal \(s)"
-                return "It stopped with \(name). The report has the full log of that run."
+                let name = [11: "SIGSEGV, a bad memory access", 6: "SIGABRT，游戏或某个库放弃了",
+                            4: "SIGILL，此设备无法执行的指令", 8: "SIGFPE，算术错误",
+                            12: "SIGSYS，iOS 不允许的系统调用"][s] ?? "signal \(s)"
+                return "它以 \(name) 终止。报告中包含那次运行的完整日志。"
             case .startFailed:
-                return "The runtime could not start it. The report says which part was missing."
+                return "运行时无法启动它。报告会说明缺少哪一部分。"
             case .unknown:
-                return "Nothing was recorded, which usually means iOS ended Husk for using too much memory, or Husk was closed from the app switcher."
+                return "没有记录到任何内容，通常意味着 iOS 因内存占用过高结束了 Husk，或 Husk 被从应用切换器关闭。"
             case .diagnosed(let d):
                 return d.detail
             }
@@ -135,23 +135,23 @@ final class CrashReport: ObservableObject {
     static func writeReport(_ r: Report) -> URL? {
         let info = Bundle.main.infoDictionary ?? [:]
         var text = """
-        Husk crash report
+        Husk 崩溃报告
         =================
-        Game     : \(r.game)
-        What     : \(r.cause.title)
-        Started  : \(r.when.map { ISO8601DateFormatter().string(from: $0) } ?? "?")
+        游戏     : \(r.game)
+        原因     : \(r.cause.title)
+        开始于   : \(r.when.map { ISO8601DateFormatter().string(from: $0) } ?? "?")
         Husk     : \(info["CFBundleShortVersionString"] as? String ?? "?") (\(info["CFBundleVersion"] as? String ?? "?")) \(info["HuskBuildCommit"] as? String ?? "")
-        Device   : \(HuskLog.deviceModel), \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)
+        设备     : \(HuskLog.deviceModel), \(UIDevice.current.systemName) \(UIDevice.current.systemVersion)
 
         """
         if let app = TranslationLayerStore.shared.apps.first(where: { $0.id == r.appID }) {
-            text += "Package  : \(app.packageName ?? "?")\n"
+            text += "包名     : \(app.packageName ?? "?")\n"
             text += "APKs     : \(app.apks.map { ($0 as NSString).lastPathComponent }.joined(separator: ", "))\n"
-            text += "Engine   : \(app.report?.nativeEngine.map { "\($0)" } ?? "?")\n"
+            text += "引擎     : \(app.report?.nativeEngine.map { "\($0)" } ?? "?")\n"
         }
-        text += "\n---- husk.log of that run ----\n"
-        text += (try? String(contentsOf: previousLogURL, encoding: .utf8)) ?? "(not kept)\n"
-        text += "\n---- native output of that run ----\n"
+        text += "\n---- 那次运行的 husk.log ----\n"
+        text += (try? String(contentsOf: previousLogURL, encoding: .utf8)) ?? "（未保留）\n"
+        text += "\n---- 那次运行的原生输出 ----\n"
         text += (try? String(contentsOf: HuskLog.previousNativeLogURL, encoding: .utf8)) ?? "(none)\n"
         let safe = r.game.replacingOccurrences(of: "/", with: "-")
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("Husk crash report - \(safe).txt")
